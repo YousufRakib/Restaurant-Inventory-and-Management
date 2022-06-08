@@ -1,0 +1,79 @@
+﻿@model IEnumerable<_3DPOSRegistrationApp.Utility.UserStatus.UserStatusUpdateLogModel>
+@using CommonEntityModel.ModelClass
+
+@{
+    ViewData["Title"] = "User Status Log Page";
+    SearchBarAndPager searchBarAndPager = new SearchBarAndPager();
+    int pageNo = 0;
+    if (ViewBag.searchBar_Pager != null)
+    {
+        searchBarAndPager = ViewBag.searchBar_Pager;
+        pageNo = searchBarAndPager.CurrentPage;
+    }
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+<br />
+<div class="card mb-4">
+    <div class="card-body">
+        <h3>@ViewBag.Message</h3><br />
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="table-responsive">
+            &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
+            <partial name="_SearchBar" model="@searchBarAndPager" />
+
+            <table class="table table-bordered" width="100%" cellspacing="0">
+                <!-- id=dataTable -->
+                <thead>
+                    <tr>
+                        <th>
+                            UserID
+                        </th>
+                        <th>
+                            Username
+                        </th>
+                        <th>
+                            Previous Status
+                        </th>
+                        <th>
+                            Updated Status
+                        </th>
+                        <th>
+                            Updated By
+                        </th>
+                        <th>
+                            Updated Date
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UserId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Username)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PreviousStatus)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UpdatedStatus)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UpdatedBy)
+                            </td>
+                            <td>
+                                @Convert.ToDateTime(TimeZone.CurrentTimeZone.ToLocalTime(item.UpdatedDate)).ToString("dd/MM/yyyy")
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <partial name="_Paging2" model="@searchBarAndPager" />
+        </div>
+    </div>
+</div>

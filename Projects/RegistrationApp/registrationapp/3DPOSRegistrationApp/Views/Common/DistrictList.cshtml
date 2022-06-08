@@ -1,0 +1,63 @@
+﻿@model IEnumerable<_3DPOSRegistrationApp.Utility.CommonModel.DistrictModel>
+@using CommonEntityModel.ModelClass
+
+@{
+    ViewData["Title"] = "District list page";
+ SearchBarAndPager searchBarAndPager = new SearchBarAndPager();
+ int pageNo = 0;
+ var loggedInUserId = ViewBag.loggedInUserID;
+ if (ViewBag.searchBar_Pager != null)
+ {
+     searchBarAndPager = ViewBag.searchBar_Pager;
+     pageNo = searchBarAndPager.CurrentPage;
+ }
+ Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+<br />
+<div class="card mb-4">
+    <div class="card-body">
+        <h3>@ViewBag.Message</h3><br />
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="table-responsive">
+
+            <a class="btn btn-sm btn-info" style="height:32px; margin-top:-3px;margin-left:0px;width:180px" asp-area="" asp-controller="Common" asp-action="AddDistrict">
+                Add District
+            </a>
+            <partial name="_SearchBar" model="@searchBarAndPager" />
+
+            <table class="table table-bordered" width="100%" cellspacing="0">
+                <!-- id=dataTable -->
+                <thead>
+                    <tr>
+                        <th>
+                            District ID
+                        </th>
+                        <th>
+                            District Name
+                        </th>
+                        <th>
+                            Country Name
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DistrictID)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DistrictName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CountryName)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <partial name="_Paging" model="@searchBarAndPager" />
+        </div>
+    </div>
+</div>

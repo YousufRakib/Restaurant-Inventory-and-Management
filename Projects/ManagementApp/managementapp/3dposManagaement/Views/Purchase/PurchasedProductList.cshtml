@@ -1,0 +1,119 @@
+﻿@model IEnumerable<_3dposManagaement.Utility.CommonModel.PurchaseProductViewModel>
+@using CommonEntityModel.ModelClass;
+
+@{
+    ViewData["Title"] = "Purchase product list";
+
+    SearchBarAndPagerForProductPurchase searchBarAndPager = new SearchBarAndPagerForProductPurchase();
+    int pageNo = 0;
+    var loggedInUserId = ViewBag.loggedInUserID;
+    if (ViewBag.searchBar_Pager != null)
+    {
+        searchBarAndPager = ViewBag.searchBar_Pager;
+        pageNo = searchBarAndPager.CurrentPage;
+    }
+    Layout = "~/Views/Shared/_HomeLayout2.cshtml";
+
+    //SearchBarAndPager searchBarAndPager = new SearchBarAndPager();
+    //int pageNo = 0;
+    //var loggedInUserId = ViewBag.loggedInUserID;
+    //if (ViewBag.searchBar_Pager != null)
+    //{
+    //    searchBarAndPager = ViewBag.searchBar_Pager;
+    //    pageNo = searchBarAndPager.CurrentPage;
+    //}
+    //Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+<br />
+<div class="card mb-4">
+    <div class="card-body">
+        <h3>@ViewBag.Message</h3><br />
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="table-responsive">
+
+            @*<a class="btn btn-sm btn-info" style="height:32px; margin-top:-3px;margin-left:0px;width:139px" asp-area="" asp-controller="Purchase" asp-action="CreatePurchase">
+                    Purchase Product
+                </a>*@
+            @*<partial name="_SearchBar" model="@searchBarAndPager" />*@
+            <partial name="_SearchBar2" model="@searchBarAndPager" />
+
+            <table class="table table-bordered" width="100%" cellspacing="0">
+                <!-- id=dataTable -->
+                <thead>
+                    <tr>
+                        <th>
+                            Sl
+                        </th>
+                        <th>
+                            Purchase Code
+                        </th>
+                        <th>
+                            Product Category
+                        </th>
+                        <th>
+                            Product Product
+                        </th>
+                        <th>
+                            Unit Type
+                        </th>
+                        <th>
+                            Unit Price
+                        </th>
+                        <th>
+                            Quantity
+                        </th>
+                        <th>
+                            Total Price
+                        </th>
+                        <th>
+                            Purchase From
+                        </th>
+                        <th>
+                            Created date
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Sl)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PurchaseCode)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ProductCategoryName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ProductName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UnitTypeName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Price)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Quantity)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Total)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PurchaseFrom)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CreatedDate)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <partial name="_Paging2" model="@searchBarAndPager" />
+            @*<partial name="_Paging" model="@searchBarAndPager" />*@
+        </div>
+    </div>
+</div>

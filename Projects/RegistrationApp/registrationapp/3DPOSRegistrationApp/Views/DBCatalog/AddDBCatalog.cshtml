@@ -1,0 +1,35 @@
+﻿@model _3DPOSRegistrationApp.Utility.ResturantModel.DBCatalogViewModel
+
+@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+<div class="container">
+
+    <h3 class="heading">Add DB-Catalog</h3>
+    <div class="div">
+        <form asp-action="AddDBCatalog">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <label for="DatabaseName">Database Name</label>
+            <input id="DatabaseName" name="DatabaseName" type="text" asp-for="DatabaseName" class="textBox validate" />
+            <span asp-validation-for="DatabaseName" class="text-danger"></span>
+
+            <label for="ConnectionString">ConnectionString</label>
+            <input id="ConnectionString" name="ConnectionString" type="text" asp-for="ConnectionString" class="textBox validate" />
+            <span asp-validation-for="ConnectionString" class="text-danger"></span>
+
+            <label for="SiteUrl">Site Url</label>
+            <input id="SiteUrl" name="SiteUrl" type="text" asp-for="SiteUrl" class="textBox validate" />
+            <span asp-validation-for="SiteUrl" class="text-danger"></span>
+
+            <label for="CanInsertRestaurant">CanInsertRestaurant</label>
+            @Html.DropDownList("CanInsertRestaurant", (IEnumerable<SelectListItem>)ViewBag.CanAddRestaurant, new { @class = "textBox validate" })
+
+            <input class="submit-button" type="submit" value="Save">
+        </form>
+    </div>
+
+</div>
+
+

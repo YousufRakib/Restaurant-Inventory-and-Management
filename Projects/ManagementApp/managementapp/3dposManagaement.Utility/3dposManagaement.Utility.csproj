@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>_3dposManagaement.Utility</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="ServiceModel\ResponseMessage.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\CommonEntityModel\CommonEntityModel.csproj" />
+    <ProjectReference Include="..\3dposManagaement.Database\3dposManagaement.Database.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ServiceModel\" />
+  </ItemGroup>
+
+</Project>

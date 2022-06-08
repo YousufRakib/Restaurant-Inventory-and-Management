@@ -1,0 +1,41 @@
+﻿@model _3DPOSRegistrationApp.Utility.ServiceModel.CommonInfo
+@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+<div class="container">
+
+    <h3 class="heading">Error Details</h3>
+    <div class="div" style="width:80%">
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <input id="ErrorLogId" name="ErrorLogId" type="hidden" asp-for="ErrorLogId" />
+
+                <label for="ErrorCode">Error Code: </label>
+                <input id="ErrorCode" name="ErrorCode" type="text" asp-for="ErrorCode" class="textBox validate" readonly />
+
+                <label for="ControllerName">Controller Name:</label>
+                <input id="ControllerName" name="ControllerName" type="text" asp-for="ControllerName" class="textBox validate" readonly />
+
+                <label for="ActionName">Action Name:</label>
+                <input id="ActionName" name="ActionName" type="text" asp-for="ActionName" class="textBox validate" readonly />
+
+                <label for="ErrorTime">Error Time:</label>
+                <input id="ErrorTime" name="ErrorTime" type="text" asp-for="ErrorTime" class="textBox validate" readonly />
+
+                <label for="ErrorFromUserName">Error FromUser:</label>
+                <input id="ErrorFromUserName" name="ErrorFromUserName" type="text" asp-for="ErrorFromUserName" class="textBox validate" readonly />
+
+            </div>
+            <div class="col-md-6">
+                <label for="ErrorMessage">Error Message:</label>
+                <textarea id="ErrorMessage" name="ErrorMessage" type="text" rows="14" asp-for="ErrorMessage" class="textBox" readonly></textarea>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+

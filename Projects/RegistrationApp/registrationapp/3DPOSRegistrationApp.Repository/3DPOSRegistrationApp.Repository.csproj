@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>_3DPOSRegistrationApp.Repository</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.5" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.11.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.11.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\CommonEntityModel\CommonEntityModel.csproj" />
+    <ProjectReference Include="..\3DPOSRegistrationApp.Database\3DPOSRegistrationApp.Database.csproj" />
+    <ProjectReference Include="..\3DPOSRegistrationApp.Utility\3DPOSRegistrationApp.Utility.csproj" />
+  </ItemGroup>
+
+</Project>

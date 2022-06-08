@@ -1,0 +1,200 @@
+﻿@model IEnumerable<_3DPOSRegistrationApp.Utility.ResturantModel.DBCatalogViewModel>
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject RoleManager<ApplicationRole> RoleManager
+
+@using CommonEntityModel.ModelClass
+@using Microsoft.AspNetCore.Identity
+@using CommonEntityModel.EntityModel;
+
+@{
+    ViewData["Title"] = "DBCatalog list page";
+    SearchBarAndPager searchBarAndPager = new SearchBarAndPager();
+    int pageNo = 0;
+    var loggedInUserId = ViewBag.loggedInUserID;
+    if (ViewBag.searchBar_Pager != null)
+    {
+        searchBarAndPager = ViewBag.searchBar_Pager;
+        pageNo = searchBarAndPager.CurrentPage;
+    }
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+<br />
+<div class="card mb-4">
+    <div class="card-body">
+        <h3>@ViewBag.Message</h3><br />
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <a class="btn btn-sm btn-info" style="height:32px; margin-top:1px;margin-left:0px;width:184px" asp-area="" asp-controller="DBCatalog" asp-action="AddDBCatalog">
+            Add DBCatalog
+        </a>
+        <partial name="_SearchBar" model="@searchBarAndPager" />
+
+        <div class="table-responsive">
+            <table class="table table-bordered" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>
+                            ID
+                        </th>
+                        <th>
+                            Database
+                        </th>
+                        <th>
+                            Restaurants
+                        </th>
+                        <th>
+                            Created By
+                        </th>
+                        <th>
+                            Created Date
+                        </th>
+                        <th>
+                            Migration File
+                        </th>
+                        <th>
+                            Database Status
+                        </th>
+                        <th>
+                            DB Table
+                        </th>
+                        <th>
+                            @if (User.IsInRole("SuperAdmin"))
+                            {
+                                <p>Action</p>
+                            }
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ID)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DatabaseName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.RestaurantCount)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CreatedBy)
+                            </td>
+                            <td>
+                                @Convert.ToDateTime(TimeZone.CurrentTimeZone.ToLocalTime(item.CreatedDate)).ToString("dd/MM/yyyy")
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MigrationFile)
+                            </td>
+                            <td>
+                                @if (item.IsDatabase_TableCreated == true)
+                                {
+                                    <p style="color:green">Created</p>
+                                }
+                                else
+                                {
+                                    <p style="color:red">Not Created Yet!</p>
+                                }
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-info" id="addTableButton" style="height:32px; margin-top:1px;margin-left:0px;width:105px" onclick="addTableFunction(@item.ID)">
+                                    Add Table
+                                </a>
+                            </td>
+                            <td>
+                                @if (User.IsInRole("SuperAdmin"))
+                                {
+                                    <a href="#">
+                                        <a class="btn btn-secondary btn-sm" asp-controller="DBCatalog" asp-action="EditDBCatalog" asp-route-id=@item.ID><span class="fas fa-edit"></span></a>
+                                        <a class="btn btn-danger btn-sm" onclick="deleteDBCatalog(@item.ID)"><span class="fas fa-trash"></span></a>
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <partial name="_Paging" model="@searchBarAndPager" />
+        </div>
+    </div>
+</div>
+
+@section scripts{
+
+    <script>
+
+        function addTableFunction(id) {
+
+            var dbCatalogID = id;
+
+            $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("AddTableToRestautantDatabase", "DBCatalog")",
+                    data: { id: dbCatalogID },
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function (data) {
+					//Loading(false);
+                        if (data.output === "success") {
+                            Swal.fire({
+                                icon: 'success',
+                                title: data.msg,
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            window.location.href = '/DBCatalog/ResturantDBCatalogList';
+						    return false;
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops!',
+                                text: data.msg
+                            })
+                            window.location.href = '/DBCatalog/ResturantDBCatalogList';
+						    return false;
+					    }
+				    }
+            });
+        }
+
+        function deleteDBCatalog(id) {
+
+            var dbCatalogID = id;
+
+            $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("RemoveDBCatalog", "DBCatalog")",
+                    data: { id: dbCatalogID },
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function (data) {
+					//Loading(false);
+                        if (data.output === "success") {
+                            Swal.fire({
+                                icon: 'success',
+                                title: data.msg,
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            window.location.href = '/DBCatalog/ResturantDBCatalogList';
+                            return false;
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops!',
+                                text: data.msg
+                            })
+                            window.location.href = '/DBCatalog/ResturantDBCatalogList';
+						    return false;
+                        }
+				    }
+            });
+        }
+
+    </script>
+
+}

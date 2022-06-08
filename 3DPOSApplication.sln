@@ -1,0 +1,95 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31105.61
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projects", "Projects", "{8CE5660E-2DB6-4739-A30E-5546F88B8694}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RegistrationApp", "RegistrationApp", "{7AFA2B67-6EA1-4795-A25A-54961BC8E703}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ManagementApp", "ManagementApp", "{EF5EFF8B-F486-42C7-94EE-80028467E140}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "3dposManagaement", "Projects\ManagementApp\managementapp\3dposManagaement\3dposManagaement.csproj", "{698DBF5D-1EE0-4136-B1B4-A78E1438E3D0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "3dposManagaement.Database", "Projects\ManagementApp\managementapp\3dposManagaement.Database\3dposManagaement.Database.csproj", "{C1754A6F-2F17-4825-A868-45C897B883D1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "3dposManagaement.Repository", "Projects\ManagementApp\managementapp\3dposManagaement.Repository\3dposManagaement.Repository.csproj", "{ADB54055-04C6-4CC6-A02D-FC509EC3ED69}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "3dposManagaement.Utility", "Projects\ManagementApp\managementapp\3dposManagaement.Utility\3dposManagaement.Utility.csproj", "{AB653672-CA64-4A1D-AA93-DEC8806AC9E5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "3DPOSRegistrationApp", "Projects\RegistrationApp\registrationapp\3DPOSRegistrationApp\3DPOSRegistrationApp.csproj", "{F8AEA665-E8B1-46A9-934F-4F2D955585D4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "3DPOSRegistrationApp.Database", "Projects\RegistrationApp\registrationapp\3DPOSRegistrationApp.Database\3DPOSRegistrationApp.Database.csproj", "{A1A7CE3B-96C6-4526-809D-05D9467F33CD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "3DPOSRegistrationApp.Repository", "Projects\RegistrationApp\registrationapp\3DPOSRegistrationApp.Repository\3DPOSRegistrationApp.Repository.csproj", "{CBBA66CD-E0B7-4322-8484-AE22324C1328}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "3DPOSRegistrationApp.Utility", "Projects\RegistrationApp\registrationapp\3DPOSRegistrationApp.Utility\3DPOSRegistrationApp.Utility.csproj", "{EFF87272-3DF3-4D54-9D36-B838C3655610}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommonEntityModels", "CommonEntityModels", "{C1B19C99-0C53-4EC7-99A8-66E048BF2FE9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonEntityModel", "CommonEntityModel\CommonEntityModel.csproj", "{B850A421-233A-497D-84CB-9C25A670E0FB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{698DBF5D-1EE0-4136-B1B4-A78E1438E3D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{698DBF5D-1EE0-4136-B1B4-A78E1438E3D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{698DBF5D-1EE0-4136-B1B4-A78E1438E3D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{698DBF5D-1EE0-4136-B1B4-A78E1438E3D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1754A6F-2F17-4825-A868-45C897B883D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1754A6F-2F17-4825-A868-45C897B883D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1754A6F-2F17-4825-A868-45C897B883D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1754A6F-2F17-4825-A868-45C897B883D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADB54055-04C6-4CC6-A02D-FC509EC3ED69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADB54055-04C6-4CC6-A02D-FC509EC3ED69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADB54055-04C6-4CC6-A02D-FC509EC3ED69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADB54055-04C6-4CC6-A02D-FC509EC3ED69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB653672-CA64-4A1D-AA93-DEC8806AC9E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB653672-CA64-4A1D-AA93-DEC8806AC9E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB653672-CA64-4A1D-AA93-DEC8806AC9E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB653672-CA64-4A1D-AA93-DEC8806AC9E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8AEA665-E8B1-46A9-934F-4F2D955585D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8AEA665-E8B1-46A9-934F-4F2D955585D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8AEA665-E8B1-46A9-934F-4F2D955585D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8AEA665-E8B1-46A9-934F-4F2D955585D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1A7CE3B-96C6-4526-809D-05D9467F33CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1A7CE3B-96C6-4526-809D-05D9467F33CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1A7CE3B-96C6-4526-809D-05D9467F33CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1A7CE3B-96C6-4526-809D-05D9467F33CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBBA66CD-E0B7-4322-8484-AE22324C1328}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBBA66CD-E0B7-4322-8484-AE22324C1328}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBBA66CD-E0B7-4322-8484-AE22324C1328}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBBA66CD-E0B7-4322-8484-AE22324C1328}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFF87272-3DF3-4D54-9D36-B838C3655610}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFF87272-3DF3-4D54-9D36-B838C3655610}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFF87272-3DF3-4D54-9D36-B838C3655610}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFF87272-3DF3-4D54-9D36-B838C3655610}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B850A421-233A-497D-84CB-9C25A670E0FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B850A421-233A-497D-84CB-9C25A670E0FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B850A421-233A-497D-84CB-9C25A670E0FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B850A421-233A-497D-84CB-9C25A670E0FB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7AFA2B67-6EA1-4795-A25A-54961BC8E703} = {8CE5660E-2DB6-4739-A30E-5546F88B8694}
+		{EF5EFF8B-F486-42C7-94EE-80028467E140} = {8CE5660E-2DB6-4739-A30E-5546F88B8694}
+		{698DBF5D-1EE0-4136-B1B4-A78E1438E3D0} = {EF5EFF8B-F486-42C7-94EE-80028467E140}
+		{C1754A6F-2F17-4825-A868-45C897B883D1} = {EF5EFF8B-F486-42C7-94EE-80028467E140}
+		{ADB54055-04C6-4CC6-A02D-FC509EC3ED69} = {EF5EFF8B-F486-42C7-94EE-80028467E140}
+		{AB653672-CA64-4A1D-AA93-DEC8806AC9E5} = {EF5EFF8B-F486-42C7-94EE-80028467E140}
+		{F8AEA665-E8B1-46A9-934F-4F2D955585D4} = {7AFA2B67-6EA1-4795-A25A-54961BC8E703}
+		{A1A7CE3B-96C6-4526-809D-05D9467F33CD} = {7AFA2B67-6EA1-4795-A25A-54961BC8E703}
+		{CBBA66CD-E0B7-4322-8484-AE22324C1328} = {7AFA2B67-6EA1-4795-A25A-54961BC8E703}
+		{EFF87272-3DF3-4D54-9D36-B838C3655610} = {7AFA2B67-6EA1-4795-A25A-54961BC8E703}
+		{C1B19C99-0C53-4EC7-99A8-66E048BF2FE9} = {8CE5660E-2DB6-4739-A30E-5546F88B8694}
+		{B850A421-233A-497D-84CB-9C25A670E0FB} = {C1B19C99-0C53-4EC7-99A8-66E048BF2FE9}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {88D8C8EC-B2D9-4BD4-89A9-731406C5520A}
+	EndGlobalSection
+EndGlobal

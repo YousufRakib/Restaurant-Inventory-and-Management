@@ -1,0 +1,43 @@
+﻿@model CommonEntityModel.ModelClass.SearchBarAndPagerForProductPurchase
+
+<div class="container btn-group" style="width:860px; margin-bottom:5px;  padding-left:3%;">
+    <div class="col-4 p-0 justify-content-end" style="margin-left: -4%">
+        <form asp-controller="Purchase" asp-action="PurchasedProductList">
+            <span class="btn-group">
+                <input class="form-control" style="height:32px;padding:16px;width:140px;margin-left:3px" type="text" name="txtPurchaseCode" value="@Model.txtPurchaseCode" placeholder="Purchase Code" />&nbsp; &nbsp;
+                <input class="form-control" style="height:32px;padding:16px;width:165px" type="text" name="txtProductCategoryName" value="@Model.txtProductCategoryName" placeholder="Product Category" />&nbsp; &nbsp;
+                <input class="form-control" style="height:32px;padding:16px;width:170px" type="text" name="txtProductName" value="@Model.txtProductName" placeholder="Product" />&nbsp; &nbsp;
+                <input class="form-control" style="height:32px;padding:16px;width:110px" type="text" name="txtUniteTypeName" value="@Model.txtUniteTypeName" placeholder="Unite Type" />&nbsp; &nbsp;
+                <input class="form-control" id="txtSelectedDateFrom" style="height:32px;padding:16px;width:135px;" type="text" name="txtSelectedDateFrom" value="@Model.txtSelectedDateFrom" placeholder="Date From" autocomplete="off" />&nbsp; &nbsp;
+                <input class="form-control" id="txtSelectedDateTo" style="height:32px;padding:16px;width:135px;" type="text" name="txtSelectedDateTo" value="@Model.txtSelectedDateTo" placeholder="Date To" autocomplete="off" />&nbsp; &nbsp;
+                <input class="p-1 ml-2 btn btn-sm btn-info" style="height:32px; margin-top:1px;width:100px;border-radius:2px;" type="submit" value="Search" />&nbsp; &nbsp;
+            </span>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var currentYear = (new Date).getFullYear() - 3;
+
+    $(function () {
+        $('#txtSelectedDateFrom').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            format: "mm/dd/yyyy",
+            language: "tr",
+            startDate: new Date(currentYear, 01, 01),
+            endDate: new Date()
+        });
+    });
+
+    $(function () {
+        $('#txtSelectedDateTo').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            format: "mm/dd/yyyy",
+            language: "tr",
+            startDate: new Date(currentYear, 01, 01),
+            endDate: new Date()
+        });
+    });
+</script>

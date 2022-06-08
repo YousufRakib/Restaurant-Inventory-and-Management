@@ -1,0 +1,186 @@
+﻿@model _3dposManagaement.Utility.CommonModel.PurchaseProductMargeModelsForMaster
+@using CommonEntityModel.ModelClass;
+
+@{
+    ViewData["Title"] = "Purchase master list page";
+    SearchBarAndPagerForPurchaseProductMaster searchBarAndPager = new SearchBarAndPagerForPurchaseProductMaster();
+    int pageNo = 0;
+    var loggedInUserId = ViewBag.loggedInUserID;
+    if (ViewBag.searchBar_Pager != null)
+    {
+        searchBarAndPager = ViewBag.searchBar_Pager;
+        pageNo = searchBarAndPager.CurrentPage;
+    }
+    Layout = "~/Views/Shared/_HomeLayout2.cshtml";
+}
+
+<h6>@ViewBag.Path</h6>
+<br />
+
+<div class="row">
+    <div class="card col-sm-10">
+        <div class="card-body">
+            <h3>Purchase Master List</h3><br />
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="table-responsive">
+
+                <a class="btn btn-sm btn-info" style="height:32px; margin-top:-3px;margin-left:0px;width:139px" asp-area="" asp-controller="Purchase" asp-action="CreatePurchase">
+                    Purchase Product
+                </a>
+                <partial name="_SearchBar3" model="@searchBarAndPager" />
+
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <!-- id=dataTable -->
+                    <thead>
+                        <tr>
+                            <th>
+                                Sl
+                            </th>
+                            <th>
+                                Purchase Code
+                            </th>
+                            <th>
+                                Created By
+                            </th>
+                            <th>
+                                Created Date
+                            </th>
+                            <th>
+                                Comment
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.purchaseMasterModel != null)
+                        {
+                            @foreach (var item in Model.purchaseMasterModel)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Sl)
+                                    </td>
+                                    <td>
+                                        <a style="height:32px; margin-top:1px;margin-left:0px;width:105px;text-decoration: none;" asp-area="" asp-controller="Purchase" asp-action="ProductPurchaseView" asp-route-id=@item.PurchaseCode>
+                                            @Html.DisplayFor(modelItem => item.PurchaseCode)
+                                        </a>
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.CreatedByName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.CreatedDate)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Comment)
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <partial name="_Paging3" model="@searchBarAndPager" />
+            </div>
+        </div>
+    </div>
+    <div class="card col-sm-2">
+        <div class="table-responsive">
+
+            <table class="table table-bordered" width="100%" cellspacing="0" style="border:none">
+                <!-- id=dataTable -->
+                <thead>
+                    <tr>
+                        <th style="border: none; border-bottom: 1px solid #dee2e6;">
+                            PC
+                        </th>
+                        <th style="border: none; border-bottom: 1px solid #dee2e6;">
+                            Total
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.purchaseMasterModel != null)
+                    {
+                        @foreach (var item in Model.purchaseProductCategoryWiseSummations)
+                        {
+                            <tr>
+                                <td style="border:none">
+                                    @Html.DisplayFor(modelItem => item.ProductCategoryName)
+                                </td>
+                                <td style="border:none">
+                                    @Html.DisplayFor(modelItem => item.TotalPrice)
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td style="border:none"></td>
+                            <td style="border:none"></td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot style="border-top: 1px solid #dee2e6;">
+                    <tr>
+                        <td style="border:none">Total:</td>
+                        <td style="border:none">@Model.NetTotal</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+@*@section scripts{
+
+        <script>
+
+            function deleteProduct(id) {
+
+                var productID = id;
+
+                $.ajax({
+                        type: "GET",
+                        url: "@Url.Action("RemoveProduct", "Inventory")",
+                        data: { id: productID },
+                        dataType: "json",
+                        contentType: "application/json",
+                        success: function (data) {
+                        //Loading(false);
+                            if (data.output === "success") {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: data.msg,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                                window.location.href = '/Inventory/ProductList';
+                                return false;
+                            }
+                            else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops!',
+                                    text: data.msg
+                                })
+                                window.location.href = '/Inventory/ProductList';
+                                return false;
+                            }
+                        }
+                });
+            }
+
+        </script>
+
+    }*@

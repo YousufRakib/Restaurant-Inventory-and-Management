@@ -1,0 +1,110 @@
+﻿@model IEnumerable<_3DPOSRegistrationApp.Utility.UserModel_View.UserViewModel>
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject RoleManager<ApplicationRole> RoleManager
+
+@using CommonEntityModel.ModelClass
+@using Microsoft.AspNetCore.Identity
+@using CommonEntityModel.EntityModel;
+
+@{
+    ViewData["Title"] = "UserList Page";
+    SearchBarAndPager searchBarAndPager = new SearchBarAndPager();
+    int pageNo = 0;
+    var loggedInUserId = ViewBag.loggedInUserID;
+    if (ViewBag.searchBar_Pager != null)
+    {
+        searchBarAndPager = ViewBag.searchBar_Pager;
+        pageNo = searchBarAndPager.CurrentPage;
+    }
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+<br />
+<div class="card mb-4">
+    <div class="card-body">
+        <h3>User List</h3><br />
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="table-responsive">
+
+            <partial name="_SearchBar" model="@searchBarAndPager" />
+
+            <table class="table table-bordered" width="100%" cellspacing="0" style="margin-top:10px">
+                <!-- id=dataTable -->
+                <thead>
+                    <tr>
+                        <th>
+                            UserID
+                        </th>
+                        <th>
+                            Full Name
+                        </th>
+                        <th>
+                            Username
+                        </th>
+                        <th>
+                            Email
+                        </th>
+                        <th>
+                            User Role
+                        </th>
+                        <th>
+                            Created Date
+                        </th>
+                        <th>
+                            Status
+                        </th>
+                        <th>
+                            @if (User.IsInRole("SuperAdmin"))
+                            {
+                                <p>Action</p>
+                            }
+                            @*@if (loggedInUserId != null)
+                                {
+                                    <p>Action</p>
+                                }*@
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UserID)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.FullName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Username)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Email)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UserRole)
+                            </td>
+                            <td>
+                                @Convert.ToDateTime(TimeZone.CurrentTimeZone.ToLocalTime(item.CreatedDate)).ToString("dd/MM/yyyy")
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UserStatus)
+                            </td>
+                            <td>
+                                @if (User.IsInRole("SuperAdmin"))
+                                {
+                                    <a href="#">
+                                        <a class="btn btn-secondary btn-sm" asp-controller="User" asp-action="EditUser" asp-route-id=@item.UserID><span class="fas fa-edit"></span></a>
+                                        @*<a class="btn btn-info btn-sm" onclick="GetData(@item.UserID)"><span class="fas fa-eye"></span></a>*@
+                                        @*<a class="btn btn-danger btn-sm" asp-action="Home" asp-route-id="@item.UserID" onclick="return confirm('Are sure wants to delete?')"><span class="fas fa-trash"></span></a>*@
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <partial name="_Paging" model="@searchBarAndPager" />
+        </div>
+    </div>
+</div>

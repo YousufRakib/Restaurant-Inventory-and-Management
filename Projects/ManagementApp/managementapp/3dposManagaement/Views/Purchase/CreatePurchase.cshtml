@@ -1,0 +1,539 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_HomeLayout3.cshtml";
+}
+
+<h6>@ViewBag.Path</h6>
+<br />
+
+<div class="row">
+    <div class="col-md-9" style="Width: 100%">
+        <div class="box box-primary" style="height: 480px; padding-top: 15px; padding-left: 40px;">
+            <h3 style="margin-left:-25px">Purchase Product</h3><br />
+            <div class="box-body">
+                <div class="body" id="organization">
+                    <div class="panel panel-default" style="padding: 1px; margin: 1px">
+
+                        <div class="body" style="margin-left:-53px; margin-right:-53px;margin-top:-20px;Width:108.2%">
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item"><a class="nav-link active show" data-toggle="tab" href="#ReadyFabric">Product Purchase</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane show active" id="ReadyFabric" style="margin-left:4px; margin-right:-5px;">
+                                    <div class="row" style="padding:5px 0px 0px 0px; margin-left:-15px;">
+
+                                        <div class="col-sm-3">
+                                            <input class="form-control" type="text" style="height:35px;margin-left:0px;" id="purchaseCode" placeholder="Enter Purchase Code" readonly value="@ViewBag.thisId" />
+                                        </div>
+                                        <div class="col-sm-3  text-center">
+                                            <button type="button" class="btn btn-xs btn-primary pull-right" style="margin-right:90%;height:35px;width:40px;" id="createPurchase"><i class="fa fa-angle-double-down"></i> Add</button>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <input class="form-control" type="text" style="height:35px;margin-left:-4px;" id="comment" placeholder="Comment" />
+                                        </div>
+
+                                    </div>
+                                    <div class="row" style="padding-top:1px;margin-left:-22px;margin-right:-15px;margin-bottom:-60px ">
+                                        <div class="col-sm-12">
+                                            <div id="gridPurchase"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3" style="background-color:#ffffff;height:480px;border-top: 3px solid; box-shadow: 0 1px 1px rgb(0 0 0 / 20%);">
+        <h6 style="">Category - Total Price</h6>
+        <hr>
+        <table id="mytable">
+            <tbody>
+                <tr>
+                </tr>
+            </tbody>
+        </table>
+        <hr>
+        <b>Net Total: <label id="netAmount">0</label></b>
+    </div>
+</div>
+
+
+<div class="wisl-panel-footer text-center">
+    <button type="button" id="save" class="btn btn-primary"><i class="fa fa-save" style="color:white"></i> Save</button>
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var purchaseCategoryArr = [];
+        var totalAmountArr = [];
+        var arraySum = 0;
+        var netTotal = 0;
+
+        function weightEditor(container, options) {
+            $('<input name="' + options.field + '"/>')
+                .appendTo(container)
+                .kendoNumericTextBox({
+                    decimals: 4,
+                });
+
+        };
+        $("#gridPurchase").kendoGrid({
+            dataSource: {
+                schema: {
+                    model: {
+                        fields: {
+                            PurchaseCode: { type: "string", hidden: true },
+                            productCategoryId: { type: "string" },
+                            productCategoryName: { type: "string"},
+                            productId: { type: "string" },
+                            productName: { type: "string"},
+                            unitTypeId: { type: "string" },
+                            unitTypeName: { type: "string", editable: false },
+                            UnitPrice: { type: "number", editable: true, validation: { min: 0 } },
+                            Quantity: { type: "number", editable: true, validation: { min: 0 }  },
+                            Total: { type: "number" },
+                            PurchasedFrom: { type: "string", editable: true}
+                        }
+                    }
+                },
+                aggregate: [{ field: 'Total', aggregate: 'sum' }],
+                //pageSize: 10
+            },
+            height: 300,
+            scrollable: true,
+            editable: true,
+            resizable: true,
+            //sortable: true,
+            selectable: true,
+            //filterable: true,
+            //pageable: true,
+
+            columns: [
+                {
+                    field: "PurchaseCode",
+                    title: "PurchaseCode",
+                    hidden: true
+                },
+                {
+                    field: "productCategoryId",
+                    title: "ProductCategoryId",
+                    hidden: true
+                },
+                {
+                    field: "productCategoryName",
+                    title: "ProductCategoryName",
+                    editor:productCategoryDownEditor
+                },
+
+                @*{
+                    field: "productCategoryId",
+                    title: "ProductCategoryId",
+                    editor: function (container, options) {
+                        $('<input id="ProductCategory" required data-text-field="productCategoryName" data-value-field="productCategoryId" data-bind="value:' + options.field + '"/>').appendTo(container).kendoComboBox({
+                            filter: "contains",
+                            placeholder: "--Select Product Category--",
+                            dataTextField: "productCategoryName",
+                            dataValueField: "productCategoryId",
+                            dataSource: {
+                                transport: {
+                                    read: {
+                                        url: "@Url.Action("GetProductCategory", "Purchase")"
+                                    }
+                                }
+                            },
+                        });
+                    }
+                },*@
+                {
+                    field: "productId",
+                    title: "ProductId",
+                    hidden: true
+                },
+                {
+                    field: "productName",
+                    title: "ProductName",
+                    editor:alterProductDropDownEditor
+                },
+                {
+                    field: "unitTypeId",
+                    title: "UnitTypeId",
+                    hidden: true
+                },
+                {
+                    field: "unitTypeName",
+                    title: "UnitTypeName"
+                    /*editor: alterUnitTypeDownEditor*/
+                },
+                {
+                    field: "UnitPrice",
+                    title: "Unit Price",
+                    editor: weightEditor
+                },
+                {
+                    field: "Quantity",
+                    title: "Quantity",
+                    editor: weightEditor
+                },
+                { field: 'Total', title: 'Total Price', template: '<span style=\'float:right;\'>#=Total#</span>', aggregates: 'sum', footerTemplate: '<span id=\'footerPlaceholder\' style=\'float:right;font-weight: bold;\'>#=sum#</span>', editor: weightEditor },
+
+                {
+                    field: "PurchasedFrom",
+                    title: "Pruchased From"
+                },
+
+                {
+                    title: "Process",
+                    template: "<button class='remove k-button'>Remove</button>",//k-icon k-i-calendar k-button
+                    width: "90px"
+                }
+            ],
+            edit: function (e) {
+                var input = e.container.find("input");
+                setTimeout(function () {
+                    input.select();
+                }, 25);
+                var columnIndex = this.cellIndex(e.container);
+                var fieldName = this.thead.find("th").eq(columnIndex).data("field");
+                if (fieldName == 'Total') this.closeCell();
+            },
+            save: function (e) {
+                if (e.values.Quantity || e.values.Quantity == 0) {
+                    var qty = (e.values.Quantity == "") ? 0 : (+ e.values.Quantity);
+                    var price = (+e.model.UnitPrice);
+                    var totalprice = (qty * price).toFixed(4);
+                    ////console.log(totalprice);
+                    e.model.set("Total", totalprice);
+
+                    purchaseCategoryArr.length = 0;
+                    totalAmountArr.length = 0;
+                    arraySum = 0;
+                    netTotal = 0;
+                    calculateCategoryWiseSum();
+
+                }
+                if (e.values.UnitPrice || e.values.UnitPrice == 0) {
+                    var price = (e.values.UnitPrice == "") ? 0 : (+ e.values.UnitPrice);
+                    var qty = (+e.model.Quantity);
+                    var totalprice = (qty * price).toFixed(4);
+                    ////console.log(totalprice);
+                    e.model.set("Total", totalprice);
+
+                    purchaseCategoryArr.length = 0;
+                    totalAmountArr.length = 0;
+                    arraySum = 0;
+                    netTotal = 0;
+                    calculateCategoryWiseSum();
+                }
+
+                //purchaseCategoryArr.length = 0;
+                //totalAmountArr.length = 0;
+                //arraySum = 0;
+                //calculateCategoryWiseSum();
+            }
+        }).data("kendoGrid");
+
+        $("#gridPurchase").on("click", "button.remove", function () {
+            var $tr = $(this).closest("tr"),
+                grid = $("#gridPurchase").data("kendoGrid");
+            grid.removeRow($tr);
+
+            purchaseCategoryArr.length = 0;
+            totalAmountArr.length = 0;
+            arraySum = 0;
+            netTotal = 0;
+            calculateCategoryWiseSum();
+        });
+
+        $("#createPurchase").click(function () {
+
+            //Loading(true);
+            var purchaseCode = $('#purchaseCode').val();
+            var grid = $("#gridPurchase").data("kendoGrid");
+            var dataSource = grid.dataSource;
+
+            var total = dataSource.data().length;
+            dataSource.insert(total,
+                {
+                    PurchaseCode: purchaseCode,
+                    productCategoryId: null,
+                    productCategoryName: "Select Product Category",
+                    productId: null,
+                    productName: "Select Product",
+                    unitTypeId: null,
+                    unitTypeName: "",
+                    UnitPrice: 0,
+                    Quantity: 0,
+                    Total: 0,
+                    PurchasedFrom: ""
+                });
+
+            purchaseCategoryArr.length = 0;
+            totalAmountArr.length = 0;
+            arraySum = 0;
+            netTotal = 0;
+            calculateCategoryWiseSum();
+        });
+
+        function calculateCategoryWiseSum(container, options) {
+
+            $("#mytable tr>td").remove();
+
+            var productPurchaseGrid = $("#gridPurchase").data("kendoGrid").dataSource.data();
+
+            for (var i = 0; i < productPurchaseGrid.length; i++)
+            {
+                if (productPurchaseGrid[i].Total != 0) {
+                    if (purchaseCategoryArr.indexOf(productPurchaseGrid[i].productCategoryName) === -1) {
+                        purchaseCategoryArr.push(productPurchaseGrid[i].productCategoryName);
+                    }
+                    netTotal = netTotal + productPurchaseGrid[i].Total;
+                }
+
+            }
+
+            for (let i = 0; i < purchaseCategoryArr.length; i++) {
+                var sum = 0;
+                for (var x = 0; x < productPurchaseGrid.length; x++)
+                {
+                    if (purchaseCategoryArr[i] == productPurchaseGrid[x].productCategoryName)
+                    {
+                        sum = sum + productPurchaseGrid[x].Total;
+                    }
+                }
+                arraySum = sum;
+                totalAmountArr.push(arraySum);
+            }
+
+            var numberOfRows = purchaseCategoryArr.length;
+
+            for (var i = 0; i < numberOfRows; i++) {
+                var row = $("<tr>");
+                for (var j = 0; j < 1; j++) {
+                    row.append($(`<td>`).text(`${purchaseCategoryArr[i]}`));
+                    row.append($(`<td>`).text(`-`));
+                    row.append($(`<td>`).text(`${totalAmountArr[i]}`));
+                }
+                $("#mytable tbody").append(row);
+            }
+            /*$("#mytable tbody").append(row);*/
+            $("#netAmount").text(netTotal);
+
+        }
+
+
+
+        function productCategoryDownEditor(container, options) {
+
+            jQuery('<input id="ProductCategory" required data-text-field="productCategoryName" data-value-field="productCategoryId" data-bind="value:' + options.field + '"/>')
+                .appendTo(container)
+
+                .kendoComboBox({
+                    autoBind: false,
+                    placeholder: "---Select---",
+                    dataSource: {
+                        transport: {
+                            read: {
+                                url: "@Url.Action("GetProductCategory", "Purchase")",
+                                type: "GET"
+                            }
+                        }
+                    },
+
+                    change: function (e) {
+                        var dataItem = this.dataItem(e.item);
+                        var grid = $("#gridPurchase").data("kendoGrid");
+                        var sel = grid.select();
+                        var sel_idx = sel.index();
+                        var gridData = grid.dataSource.data();
+
+                        if (dataItem.productCategoryId == 0 || dataItem.productCategoryId == null) {
+                            gridData[sel_idx].productCategoryId = null;
+                            gridData[sel_idx].productCategoryName = "";
+                            grid.refresh();
+                        }
+                        else {
+                            gridData[sel_idx].productCategoryId = dataItem.productCategoryId;
+                            gridData[sel_idx].productCategoryName = dataItem.productCategoryName;
+                            grid.refresh();
+                        }
+                    }
+                });
+        }
+
+        function alterProductDropDownEditor(container, options) {
+
+            var grid = $("#gridPurchase").data("kendoGrid");
+            var sel = grid.select();
+            var sel_idx = sel.index();
+            var gridData = grid.dataSource.data();
+            //alert(gridData[sel_idx].productCategoryId);
+
+
+            jQuery('<input id="Product" required data-text-field="productName" data-value-field="productId" data-bind="value:' + options.field + '"/>')
+                .appendTo(container)
+
+                .kendoComboBox({
+                    autoBind: false,
+                    placeholder: "---Select---",
+                    dataSource: {
+                        transport: {
+                            read: {
+                                url: "@Url.Action("GetProductByProductCategoryId", "Purchase")?productCategoryId=" + gridData[sel_idx].productCategoryId,
+                                type: "GET"
+                            }
+                        }
+                    },
+
+                    change: function (e) {
+                        var dataItem = this.dataItem(e.item);
+                        var grid = $("#gridPurchase").data("kendoGrid");
+                        var sel = grid.select();
+                        var sel_idx = sel.index();
+                        var gridData = grid.dataSource.data();
+
+                        if (dataItem.productId == 0 || dataItem.productId == null) {
+                            gridData[sel_idx].productId = null;
+                            gridData[sel_idx].productName = "";
+                            grid.refresh();
+                        }
+                        else {
+                            gridData[sel_idx].productId = dataItem.productId;
+                            gridData[sel_idx].productName = dataItem.productName;
+                            grid.refresh();
+
+                            alterUnitTypeDownEditor(gridData[sel_idx].productId, sel_idx);
+                        }
+                    }
+                });
+        }
+
+        function alterUnitTypeDownEditor(productId, sel_idx) {
+            /*alert("Selected value " + sel_idx);*/
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetUnitTypeByProductId", "Purchase")",
+                data: { productId: productId},
+                dataType: "json",
+                contentType: "application/json",
+                success: function (data) {
+                    Loading(false);
+                    /*console.log(data);*/
+                    if (data.output === "success") {
+                        var result = data.returnvalue;
+                        var grid = $("#gridPurchase").data("kendoGrid");
+                        var gridData = grid.dataSource.data();
+                        gridData[sel_idx].unitTypeId = result.unitTypeId;
+                        gridData[sel_idx].unitTypeName = result.unitTypeName;
+                        grid.refresh();
+                    }
+                    else
+                    {
+                        var grid = $("#gridPurchase").data("kendoGrid");
+                        var gridData = grid.dataSource.data();
+                        gridData[sel_idx].unitTypeId = null
+                        gridData[sel_idx].unitTypeName = "";
+                        grid.refresh();
+                    }
+                }
+            });
+        }
+
+        $('#save').click(function () {
+
+            var PurchaseCode = $('#purchaseCode').val();
+            var Comment = $('#comment').val();
+
+            var purchaseProductSaveModel = [];
+
+            var productPurchaseGrid = $("#gridPurchase").data("kendoGrid").dataSource.data();
+
+            for (var i = 0; i < productPurchaseGrid.length; i++) {
+
+                if (productPurchaseGrid[i].Total != 0)
+                {
+                    if (productPurchaseGrid.length == 0 || productPurchaseGrid.length == null) {
+                        /*swal("Opps!", "You didn't add any product yet!", "error");*/
+                        alert("You didn't add any product yet!");
+                        return;
+                    }
+
+                    var productPurchase = {
+                        PurchaseCode: PurchaseCode,
+                        ProductCategoryId: productPurchaseGrid[i].productCategoryId,
+                        ProductCategoryName: productPurchaseGrid[i].productCategoryName,
+                        ProductId: productPurchaseGrid[i].productId,
+                        ProductName: productPurchaseGrid[i].productName,
+                        UnitTypeId: productPurchaseGrid[i].unitTypeId,
+                        UnitTypeName: productPurchaseGrid[i].unitTypeName,
+                        UnitPrice: productPurchaseGrid[i].UnitPrice,
+                        Quantity: productPurchaseGrid[i].Quantity,
+                        Total: productPurchaseGrid[i].Total,
+                        PurchasedFrom: productPurchaseGrid[i].PurchasedFrom
+                    };
+                    purchaseProductSaveModel.push(productPurchase);
+                }
+            }
+
+            if (purchaseProductSaveModel.length == 0 || purchaseProductSaveModel.length == null) {
+                alert("You didn't add any product yet!!");
+                //window.location.href = "/Inventory/UnitTypeList";
+                //swal("Opps!", "You didn't add any product yet!", "error");
+                return;
+            }
+
+            var purchaseMasterModel = {
+                PurchaseCode: PurchaseCode,
+                Comment: Comment
+            };
+
+            var model = {
+                PurchaseProductSaveModel: purchaseProductSaveModel,
+                PurchaseMasterModel: purchaseMasterModel
+            };
+
+            //console.log("test" + JSON.stringify(productPurchaseCommonModel));
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("SavePurchaseProduct", "Purchase")",
+                data: JSON.stringify(model),
+                //dataType: "json",
+                contentType: "application/json",
+                //processData: false,
+                //contentType: false,
+                //async: false,
+                success: function (data) {
+                    //Loading(false);
+                    //if (data.output === "success") {
+                    //    swal("Success", data.msg, "success");
+                    //    window.location.href = '/Purchase/PurchaseMasterList';
+                    //    return false;
+
+                    //} else {
+                    //    swal("Oops!", data.msg, "error");
+                    //    return false;
+                    //}
+
+                    if (data.output === "success") {
+                        alert("Data Saved Successfully!");
+                        window.location.href = '/Purchase/PurchaseMasterList';
+                        $("#SaveModal").modal("hide");
+                    }
+                    else {
+                        alert("Exception");
+                        window.location.href = '/Purchase/PurchaseMasterList';
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+

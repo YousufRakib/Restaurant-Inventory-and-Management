@@ -1,0 +1,88 @@
+﻿@model IEnumerable<_3DPOSRegistrationApp.Utility.ServiceModel.CommonInfo>
+@using CommonEntityModel.ModelClass
+
+@{
+    ViewData["Title"] = "Error log list page";
+    SearchBarAndPager searchBarAndPager = new SearchBarAndPager();
+    int pageNo = 0;
+    var loggedInUserId = ViewBag.loggedInUserID;
+    if (ViewBag.searchBar_Pager != null)
+    {
+        searchBarAndPager = ViewBag.searchBar_Pager;
+        pageNo = searchBarAndPager.CurrentPage;
+    }
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+<br />
+<div class="card mb-4">
+    <div class="card-body">
+        <h3>@ViewBag.Message</h3><br />
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="table-responsive">
+            &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
+            <partial name="_SearchBar" model="@searchBarAndPager" />
+
+            <table class="table table-bordered" width="100%" cellspacing="0">
+                <!-- id=dataTable -->
+                <thead>
+                    <tr>
+                        <th>
+                            Error Code
+                        </th>
+                        <th>
+                            Controller Name
+                        </th>
+                        <th>
+                            Action Name
+                        </th>
+                        <th>
+                            Error Time
+                        </th>
+                        <th>
+                            Error From
+                        </th>
+                        <th>
+                            <p>Action</p>
+                            @*@if (loggedInUserId != null)
+                                {
+                                    <p>Action</p>
+                                }*@
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ErrorCode)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ControllerName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ActionName)
+                            </td>
+                            <td>
+                                @Convert.ToDateTime(TimeZone.CurrentTimeZone.ToLocalTime(item.ErrorTime)).ToString("dd/MM/yyyy")
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ErrorFromUserName)
+                            </td>
+                            <td>
+                                <a href="#">
+                                    <a class="btn btn-info btn-sm" asp-controller="Log" asp-action="ErrorLogDetails" asp-route-id=@item.ErrorLogId>
+                                        <span class="fas fa-eye"></span>
+                                    </a>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <partial name="_Paging" model="@searchBarAndPager" />
+        </div>
+    </div>
+</div>

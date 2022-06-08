@@ -1,0 +1,182 @@
+﻿@model IEnumerable<_3DPOSRegistrationApp.Utility.ResturantModel.ResturantModel>
+@using CommonEntityModel.ModelClass
+
+@{
+    ViewData["Title"] = "Restaurant list page";
+    SearchBarAndPager searchBarAndPager = new SearchBarAndPager();
+    int pageNo = 0;
+    var loggedInUserId = ViewBag.loggedInUserID;
+    if (ViewBag.searchBar_Pager != null)
+    {
+        searchBarAndPager = ViewBag.searchBar_Pager;
+        pageNo = searchBarAndPager.CurrentPage;
+    }
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+<br />
+<div class="card mb-4">
+    <div class="card-body">
+        <h3>@ViewBag.Message</h3><br />
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <a class="btn btn-sm btn-info" style="height:32px; margin-top:1px;margin-left:0px;width:184px" asp-area="" asp-controller="Resturant" asp-action="AddResturant">
+            Add Restaurant
+        </a>
+        <partial name="_SearchBar" model="@searchBarAndPager" />
+
+        <div class="table-responsive">
+            <table class="table table-bordered" width="100%" cellspacing="0">
+                <!-- id=dataTable -->
+                <thead>
+                    <tr>
+                        <th>
+                            Restaurant Code
+                        </th>
+                        <th>
+                            Database
+                        </th>
+                        @*<th>
+                            User Email
+                        </th>
+                        <th>
+                            Password
+                        </th>*@
+                        @*<th>
+                                Contact Persion
+                            </th>*@
+                        @*<th>
+                                Contact Phone
+                            </th>*@
+                        <th>
+                            Country
+                        </th>
+                        <th>
+                            District
+                        </th>
+                        <th>
+                            CreatedBy
+                        </th>
+                        <th>
+                            Action
+                        </th>
+
+                        @*<th >
+                                DB Status
+                            </th>*@
+                        @*<th >
+                                Table Status
+                            </th>*@
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <a style="height:32px; margin-top:1px;margin-left:0px;width:105px;text-decoration: none;" asp-area="" asp-controller="Resturant" asp-action="RestaurantActionsView" asp-route-id=@item.ResturantID>
+                                    @Html.DisplayFor(modelItem => item.ResturentCode)
+                                </a>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DatabaseName)
+                            </td>
+                            @*<td>
+                                @Html.DisplayFor(modelItem => item.Email)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Password)
+                            </td>*@
+                            @*<td>
+                                    @Html.DisplayFor(modelItem => item.ContactPersion)
+                                </td>*@
+                            @*<td>
+                                    @Html.DisplayFor(modelItem => item.ContactPhone)
+                                </td>*@
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Country)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.District)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CreatedBy)
+                            </td>
+                            <td>
+                                <a class="btn btn-secondary btn-sm" asp-controller="Resturant" asp-action="EditRestaurant" asp-route-id=@item.ResturantID><span class="fas fa-edit"></span></a>
+                                @if (item.DatabaseName == null)
+                                {
+                                    <a class="btn btn-danger btn-sm" onclick="deleteRestaurant(@item.ResturantID)"><span class="fas fa-trash"></span></a>
+                                }
+                            </td>
+                            @*<td>
+                                    @if (item.IsDBCreated == true)
+                                    {
+                                        <p>Created</p>
+                                    }
+                                    else
+                                    {
+                                        <a class="btn btn-sm btn-info" style="height:32px; margin-top:1px;margin-left:0px;width:105px" asp-area="" asp-controller="Resturant" asp-action="AddRestautantDatabase" asp-route-id=@item.ResturantID>
+                                            Add Database
+                                        </a>
+                                    }
+                                </td>*@
+                            @*<td>
+                                    @if (item.IsTableCreated == true)
+                                    {
+                                        <p>Created</p>
+                                    }
+                                    else
+                                    {
+                                        <a class="btn btn-sm btn-info" style="height:32px; margin-top:1px;margin-left:0px;width:80px" asp-area="" asp-controller="Resturant" asp-action="AddRestautantDatabaseTable" asp-route-id=@item.ResturantID>
+                                            Add Table
+                                        </a>
+                                    }
+                                </td>*@
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <partial name="_Paging" model="@searchBarAndPager" />
+        </div>
+    </div>
+</div>
+
+@section scripts{
+
+    <script>
+        function deleteRestaurant(id) {
+
+            var restaurantID = id;
+
+            $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("DeleteRestaurant", "Resturant")",
+                    data: { id: restaurantID },
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function (data) {
+					//Loading(false);
+                        if (data.output === "success") {
+                            Swal.fire({
+                                icon: 'success',
+                                title: data.msg,
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            window.location.href = '/Resturant/ResturantList';
+                            return false;
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops!',
+                                text: data.msg
+                            })
+                            window.location.href = '/Resturant/ResturantList';
+						    return false;
+                        }
+				    }
+            });
+        }
+    </script>
+}

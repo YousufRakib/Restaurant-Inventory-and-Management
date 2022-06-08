@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>_3DPOSRegistrationApp.Utility</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Pager.cs" />
+    <Compile Remove="ServiceModel\ResponseMessage.cs" />
+    <Compile Remove="ServiceModel\SearchBarAndPager.cs" />
+    <Compile Remove="ServiceModel\SearchBarAndPagerForAuditLog.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\CommonEntityModel\CommonEntityModel.csproj" />
+    <ProjectReference Include="..\3DPOSRegistrationApp.Database\3DPOSRegistrationApp.Database.csproj" />
+  </ItemGroup>
+
+</Project>

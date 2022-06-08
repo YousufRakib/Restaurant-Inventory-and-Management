@@ -1,0 +1,49 @@
+﻿@model _3DPOSRegistrationApp.Utility.UserModel_View.RegistrationViewModel
+@using _3DPOSRegistrationApp.Utility.UserStatus
+@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+<div class="container">
+
+    <h3 class="heading">Edit User Information</h3>
+    <div class="div">
+        <form asp-action="EditUser">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            @*<div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
+
+            <input id="id" name="id" type="hidden" asp-for="id" />
+
+            @*<label for="FullName">Full Name</label>
+        <input id="FullName" name="FullName" type="text" asp-for="FullName" class="textBox validate" placeholder="Full Name" required />
+        <span asp-validation-for="FullName" class="text-danger"></span>*@
+
+            <label for="Email">Email</label>
+            <input id="Email" name="Email" type="email" asp-for="Email" class="textBox validate" readonly />
+            <span asp-validation-for="Email" class="text-danger"></span>
+
+            @*<label for="LastPassword">Current password</label>
+        <input id="LastPassword" name="LastPassword" type="password" asp-for="LastPassword" minlength="1" data-rule-password="true" class="textBox validate" placeholder="Current Password" required />
+        <span class="helper-text" data-error="At least 6 characters" data-success="Valid"></span>
+
+        <label for="Password">New password</label>
+        <input id="Password" name="Password" type="password" asp-for="Password" minlength="1" data-rule-password="true" class="textBox validate" placeholder="Password" required />
+        <span class="helper-text" data-error="At least 6 characters" data-success="Valid"></span>
+
+        <label for="confirmPassword">Confirm new password</label>
+        <input id="confirmPassword" class="textBox validate" name="confirmPassword" type="password" data-rule-password="true" data-rule-equalTo="#Password" placeholder="Confirm Password" required />
+        <span class="helper-text" data-error="Password not match" data-success="Password match"></span>*@
+
+            <label for="confirmPassword">User Role</label>
+            @Html.DropDownList("UserRole", (IEnumerable<SelectListItem>)ViewBag.Roles, "--Select Role--", new { @class = "textBox validate" })
+
+            <label>User Status</label>
+            @Html.DropDownList("UserStatusId", (IEnumerable<SelectListItem>)ViewBag.Status, "--Select Status--", new { @class = "textBox validate" })
+            
+            <input class="submit-button" type="submit" value="Submit">
+        </form>
+    </div>
+
+</div>
+
+

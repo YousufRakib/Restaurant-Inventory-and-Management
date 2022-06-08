@@ -1,0 +1,27 @@
+﻿@model _3DPOSRegistrationApp.Database.Model.District
+
+@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+<div class="container">
+
+    <h3 class="heading">Add District</h3>
+    <div class="div">
+        <form asp-action="AddDistrict">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <label for="CountryID">Country</label>
+            @Html.DropDownList("CountryID", (IEnumerable<SelectListItem>)ViewBag.Countries, "--Select Country--", new { @class = "textBox validate" })
+
+            <label for="DistrictName">District Name</label>
+            <input id="DistrictName" name="DistrictName" type="text" asp-for="DistrictName" class="textBox validate" />
+            <span asp-validation-for="DistrictName" class="text-danger"></span>
+
+            <input class="submit-button" type="submit" value="Save">
+        </form>
+    </div>
+
+</div>
+
+

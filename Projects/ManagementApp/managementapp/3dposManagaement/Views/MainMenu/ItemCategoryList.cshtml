@@ -1,0 +1,621 @@
+﻿@model _3dposManagaement.Utility.MenuModel.ItemCategoryMargeViewModel
+@using CommonEntityModel.ModelClass;
+
+@{
+    ViewData["Title"] = "ItemCategory list page";
+    SearchBarAndPager searchBarAndPager = new SearchBarAndPager();
+    int pageNo = 0;
+    var loggedInUserId = ViewBag.loggedInUserID;
+    if (ViewBag.searchBar_Pager != null)
+    {
+        searchBarAndPager = ViewBag.searchBar_Pager;
+        pageNo = searchBarAndPager.CurrentPage;
+    }
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+<h6>@ViewBag.Path</h6>
+<br />
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h3>@ViewBag.Message</h3><br />
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="table-responsive">
+            <a href="#" class="btn btn-info" onclick="AddNewItemCategory(0)">Add Category</a> <br /><br />
+            @*<a class="btn btn-sm btn-info" style="height:32px; margin-top:-3px;margin-left:0px;width:139px" asp-area="" asp-controller="Inventory" asp-action="AddProduct">
+                    Add Menu
+                </a>*@
+            <partial name="_SearchBar" model="@searchBarAndPager" />
+
+            <table class="table table-bordered" width="100%" cellspacing="0">
+                <!-- id=dataTable -->
+                <thead>
+                    <tr>
+                        <th>
+                            Category Name
+                        </th>
+                        <th>
+                            Description
+                        </th>
+                        @*<th>
+                                Emoji/Icon
+                            </th>*@
+                        <th>
+                            Assigned Menu
+                        </th>
+                        <th>
+                            Status
+                        </th>
+                        <th>
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ItemCategoryList)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CategoryName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CategoryDescription)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Menus)
+                            </td>
+                            <td>
+                                @if (item.Status == true)
+                                {
+                                    var status = 1;
+                                    <label class="statusSwitch">
+                                        <input type="checkbox" onclick='UpdateStatus(@item.CategoryId,@status)' checked>
+                                        <span class="statusSlider round"></span>
+                                    </label>
+                                }
+                                else
+                                {
+                                    var status = 0;
+                                    <label class="statusSwitch">
+                                        <input type="checkbox" onclick='UpdateStatus(@item.CategoryId,@status)'>
+                                        <span class="statusSlider round"></span>
+                                    </label>
+                                }
+                            </td>
+                            <td>
+                                <a href="#">
+                                    <a class="btn btn-secondary btn-sm" onclick='EditItemCategoryRecord(@item.CategoryId)'><span class="fas fa-edit"></span></a>
+                                    <a class="btn btn-danger btn-sm" onclick='DeleteItemCategoryRecord(@item.CategoryId)'><span class="fas fa-trash"></span></a>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <partial name="_Paging" model="@searchBarAndPager" />
+        </div>
+    </div>
+</div>
+
+@*Create A Popup Modal for Add ItemCategory*@
+
+<div class="modal fade" id="SaveModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="SaveModalTitle"></h5>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+            </div>
+            <div class="modal-body">
+                <form id="saveForm">
+                    <fieldset id="SubmitForm">
+                        @Html.HiddenFor(m => m.CategoryId, new { @id = "CategoryId" })
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-3">Category Name</div>
+                                <div class="col-md-9">@Html.TextBoxFor(m => m.CategoryName, new { @id = "CategoryName", @class = "form-control" })</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-3">Description</div>
+                                <div class="col-md-9">@Html.TextAreaFor(m => m.CategoryDescription, new { @id = "CategoryDescription", @class = "form-control" })</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-3">Image</div>
+                                <div class="col-md-9">
+                                    <label style="cursor: pointer;" placeholder="Select Image">
+                                        <img id="saveImgPreview" height="140" width="140" />
+                                        <input type="file" name="ItemCategoryImageFile" id="saveItemCategoryFile" style="display:none" onchange="readSaveImageURL(this);" />
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-3">Assigned Menu</div>
+                                <div class="col-md-9">
+                                    <table class="table table-striped" id="MenuListTable">
+                                        <tbody id="MenuList">
+                                            <tr id="MenuLoadingStatus" style="color:red"></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-8"></div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <a href="#" class="btn btn-block btn-danger" id="SaveItemCategory">Save</a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Create A Popup Modal for Update ItemCategory*@
+
+<div class="modal fade" id="EditModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="EditModalTitle"></h5>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <fieldset id="UpdatedSubmitForm">
+                        @Html.HiddenFor(m => m.CategoryId, new { @id = "EditCategoryId" })
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-3">Category Name</div>
+                                <div class="col-md-9">@Html.TextBoxFor(m => m.CategoryName, new { @id = "EditCategoryName", @class = "form-control" })</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-3">Description</div>
+                                <div class="col-md-9">@Html.TextBoxFor(m => m.CategoryDescription, new { @id = "EditCategoryDescription", @class = "form-control" })</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-3">Image</div>
+                                <div class="col-md-9">
+                                    <label style="cursor: pointer;" placeholder="Select Image">
+                                        <img id="editImgPreview" height="140" width="140" />
+                                        <input type="file" name="ItemCategoryImageFile" id="editItemCategoryFile" style="display:none" onchange="readEditImageURL(this);" />
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-3">Assigned Menu</div>
+                                <div class="col-md-9">
+                                    <table class="table table-striped" id="editMenuListTable">
+                                        <tbody id="editMenuList">
+                                            <tr id="editMenuLoadingStatus" style="color:red"></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-8"></div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <a href="#" class="btn btn-block btn-danger" id="UpdateItemCategory">Update</a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Create A PopUp Modal For DeleteConfirmation*@
+
+<div class="modal fade" id="DeleteModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Delete Itemcategory</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="categoryid" hidden />
+                <h4 style="text-align: center;">Do you want to delete this ?</h4>
+                <br />
+                <div>
+                    <h6 style="font-weight: bold; text-align: center;"> Yes</h6>
+                </div>
+                <div>
+                    <h6 style="text-align: center;">Verify Code</h6>
+                </div>
+
+                <input type="text" class="code-button" id="code1" style=" width: 18px; border-top: none; border-left: none; border-right: none;margin-left:41%" />
+                <input type="text" class="code-button" id="code2" style=" width: 18px; border-top: none; border-left: none; border-right: none;" />
+                <input type="text" class="code-button" id="code3" style=" width: 18px; border-top: none; border-left: none; border-right: none;" />
+                <input type="text" class="code-button" id="code4" style=" width: 18px; border-top: none; border-left: none; border-right: none;" />
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-primary" data-dismiss="modal" id="r">Cancle</a>
+                <a href="#" class="btn btn-danger" onclick="ConfirmDelete()" id="confirmButton">Confirm</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="StatusConfirmation">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Change Status</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="statusCategoryId" hidden />
+                <h4 style="text-align: center;">Are you sure, You want to <input style="width: 19%; border: none; font-size: 1.5rem; font-weight: 500; margin-right: -2px; text-align: center; " type="text" id="status" /> this?</h4>
+
+                <br />
+
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-primary" data-dismiss="modal" onclick="CloseModal()" id="closeModal">Cancle</a>
+                <a href="#" class="btn btn-danger" id="confirmStatusButton" onclick="ConfirmStatus()" style="margin-right:32%">Confirm</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+
+        $("#code1").keyup(function () {
+            document.getElementById("code2").focus();
+        });
+        $("#code2").keyup(function () {
+            document.getElementById("code3").focus();
+        });
+        $("#code3").keyup(function () {
+            document.getElementById("code4").focus();
+        });
+        $("#code4").keyup(function () {
+            document.getElementById("confirmButton").focus();
+        });
+
+        function readSaveImageURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#saveImgPreview')
+                        .attr('src', e.target.result)
+                        .width(150)
+                        .height(150);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function readEditImageURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#editImgPreview')
+                        .attr('src', e.target.result)
+                        .width(150)
+                        .height(150);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function AddNewItemCategory(categoryId) {
+            $("#saveForm")[0].reset();
+            $("#CategoryId").val(0);
+            $("#SaveModalTitle").html("Add ItemCategory");
+            $("#SaveModal").modal();
+
+            $.get("/MainMenu/GetMenuListForCategory?categoryId="+0, null, MenuBind);
+        }
+
+        function MenuBind(menuList) {
+            var table = document.getElementById("MenuListTable");
+            var rowCount = table.rows.length;
+            for (var i = rowCount - 1; i >= 0; i--) {
+                table.deleteRow(i);
+            }
+
+            var SetData = $("#MenuList");
+            for (var i = 0; i < menuList.length; i++) {
+                var Data =
+                    "<tr class='row_" + menuList[i].menuId + "'>" +
+                    "<td> <input type='checkbox'/></td>" +
+                    "<td style='display: none;'>" + menuList[i].menuId + "</td>" +
+                    "<td>" + menuList[i].menuName + "</td>" +
+                    "</tr>";
+                SetData.append(Data);
+            }
+        }
+
+        function EditItemCategoryRecord(categoryId) {
+            $("#editForm")[0].reset();
+            $("#EditCategoryId").val(0);
+            $("#EditModalTitle").html("Edit ItemCategory");
+            $("#EditModal").modal();
+
+            var url = "/MainMenu/GetItemCategoryById?categoryId=" + categoryId;
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    console.log(obj);
+                    $("#EditCategoryId").val(obj.CategoryId);
+                    $("#EditCategoryName").val(obj.CategoryName);
+                    $("#EditCategoryDescription").val(obj.CategoryDescription);
+                }
+            })
+            $.get("/MainMenu/GetMenuListForCategory?categoryId=" + categoryId, null, EditMenuBind);
+
+            setTimeout(function () {
+                var imgUrl = "@Url.Action("GetItemCategoryImage", "MainMenu")?categoryId=" + categoryId;
+                $("#editImgPreview").attr("src", imgUrl);
+			}, 50);
+        }
+
+        function EditMenuBind(menuList) {
+            var table = document.getElementById("editMenuListTable");
+            var rowCount = table.rows.length;
+            for (var i = rowCount - 1; i >= 0; i--) {
+                table.deleteRow(i);
+            }
+
+            var SetData = $("#editMenuList");
+            for (var i = 0; i < menuList.length; i++) {
+                if (menuList[i].isCheckedMenu == true) {
+                    var Data =
+                        "<tr class='row_" + menuList[i].menuId + "'>" +
+                            "<td> <input type='checkbox' checked/></td>" +
+                            "<td style='display: none;'>" + menuList[i].menuId + "</td>" +
+                            "<td>" + menuList[i].menuName + "</td>" +
+                        "</tr>";
+                    SetData.append(Data);
+                }
+                else {
+                    var Data =
+                        "<tr class='row_" + menuList[i].menuId + "'>" +
+                            "<td> <input type='checkbox'/></td>" +
+                            "<td style='display: none;'>" + menuList[i].menuId + "</td>" +
+                            "<td>" + menuList[i].menuName + "</td>" +
+                        "</tr>";
+                    SetData.append(Data);
+                }
+
+            }
+        }
+
+        $("#SaveItemCategory").click(function () {
+
+            var menuListModel = [];
+            var grid = document.getElementById("MenuListTable");
+
+            //Reference the CheckBoxes in Table.
+            var checkBoxes = grid.getElementsByTagName("input");
+
+            //Loop through the CheckBoxes.
+            for (var i = 0; i < checkBoxes.length; i++) {
+                if (checkBoxes[i].checked) {
+                    var row = checkBoxes[i].parentNode.parentNode;
+                    var ItemCategoryWithMenuList = {
+                        MenuId: row.cells[1].innerHTML,
+                        MenuName: row.cells[2].innerHTML
+                    };
+                    menuListModel.push(ItemCategoryWithMenuList);
+                }
+            }
+
+            var data = new FormData();
+
+            var files = $("#saveItemCategoryFile").get(0).files;
+            if (files.length > 0) {
+                data.append("itemCategoryImageFile", files[0]);
+            }
+
+            var CategoryName = $('#CategoryName').val();
+            var CategoryDescription = $('#CategoryDescription').val();
+
+            var dataModel = {
+                CategoryName: CategoryName,
+                CategoryDescription: CategoryDescription
+            }
+
+            data.append('dataModel', JSON.stringify(dataModel));
+            data.append('menuListModel', JSON.stringify(menuListModel));
+            /*var model2 = $("#SubmitForm").serialize();*/
+
+            $.ajax({
+                type: "Post",
+                url: "/MainMenu/AddItemCategory",
+                data: data,
+                //dataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data.output === "success") {
+                        alert("Data Saved Successfully!");
+                        window.location.href = "/MainMenu/ItemCategoryList";
+                        $("#SaveModal").modal("hide");
+                    }
+                    else {
+                        alert("Exception");
+                        //window.location.href = "/MainMenu/ItemCategoryList";
+                        //$("#SaveModal").modal("hide");
+                    }
+                }
+            })
+        });
+
+        $("#UpdateItemCategory").click(function () {
+            var menuListModel = [];
+            var grid = document.getElementById("editMenuListTable");
+
+            //Reference the CheckBoxes in Table.
+            var checkBoxes = grid.getElementsByTagName("input");
+
+            //Loop through the CheckBoxes.
+            for (var i = 0; i < checkBoxes.length; i++) {
+                if (checkBoxes[i].checked) {
+                    var row = checkBoxes[i].parentNode.parentNode;
+                    var ItemCategoryWithMenuList = {
+                        MenuId: row.cells[1].innerHTML,
+                        MenuName: row.cells[2].innerHTML
+                    };
+                    menuListModel.push(ItemCategoryWithMenuList);
+                }
+            }
+
+
+            var data = new FormData();
+
+            var files = $("#editItemCategoryFile").get(0).files;
+            if (files.length > 0) {
+                data.append("itemCategoryImageFile", files[0]);
+            }
+
+            var EditCategoryId = $('#EditCategoryId').val();
+            var EditCategoryName = $('#EditCategoryName').val();
+            var EditCategoryDescription = $('#EditCategoryDescription').val();
+
+            var dataModel = {
+                CategoryId: EditCategoryId,
+                CategoryName: EditCategoryName,
+                CategoryDescription: EditCategoryDescription
+            }
+
+            data.append('dataModel', JSON.stringify(dataModel));
+            data.append('menuListModel', JSON.stringify(menuListModel));
+
+            $.ajax({
+                type: "Post",
+                url: "/MainMenu/EditItemCategory",
+                data: data,
+                //dataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data.output === "success") {
+                        alert("Data Updated Successfully!");
+                        window.location.href = "/MainMenu/ItemCategoryList";
+                        $("#EditModal").modal("hide");
+                    }
+                    else {
+                        alert("Exception");
+                        //window.location.href = "/MainMenu/ItemCategoryList";
+                        //$("#EditModal").modal("hide");
+                    }
+                }
+            })
+        });
+
+        var CloseModal = function () {
+            window.location.href = "/MainMenu/ItemCategoryList";
+            $("#StatusConfirmation").modal("hide");
+        }
+
+        var UpdateStatus = function (categoryId, status) {
+            if (status == 1) {
+                $("#status").val("Inactive");
+            }
+            else {
+                $("#status").val("Active");
+            }
+            $("#statusCategoryId").val(categoryId);
+            $("#StatusConfirmation").modal("show");
+        }
+
+        var ConfirmStatus = function () {
+            var categoryId = $("#statusCategoryId").val();
+
+            $.ajax({
+                type: "POST",
+                url: "/MainMenu/ChangeCategoryStatus?categoryId=" + categoryId,
+                success: function (data) {
+                    if (data.output === "success") {
+                        alert("Changed!..");
+                        window.location.href = "/MainMenu/ItemCategoryList";
+                        $("#StatusConfirmation").modal("hide");
+                    }
+                    else {
+                        alert("Exception");
+                        window.location.href = "/MainMenu/ItemCategoryList";
+                        $("#StatusConfirmation").modal("hide");
+                    }
+                }
+            })
+        }
+
+        var DeleteItemCategoryRecord = function (categoryId) {
+
+            $("#categoryid").val(categoryId);
+            $("#DeleteModal").modal("show");
+        }
+
+        var ConfirmDelete = function () {
+            var code = $("#code1").val() + $("#code2").val() + $("#code3").val() + $("#code4").val();
+            var categoryId = $("#categoryid").val();
+
+            $.ajax({
+                type: "POST",
+                url: "/MainMenu/DeleteItemCategory?categoryId=" + categoryId + "&code=" + code,
+                success: function (data) {
+                    if (data.output === "success") {
+                        alert("Deleted!..");
+                        window.location.href = "/MainMenu/ItemCategoryList";
+                        $("#DeleteModal").modal("hide");
+                        $(".row_" + CategoryId).remove();
+                    }
+                    else if (data.output === "insuccess") {
+                        alert("Code not match");
+                        window.location.href = "/MainMenu/ItemCategoryList";
+                        $("#DeleteModal").modal("hide");
+                    }
+                    else if (data.output === "error"){
+                        alert("Exception");
+                        window.location.href = "/MainMenu/ItemCategoryList";
+                        $("#DeleteModal").modal("hide");
+                    }
+                }
+            })
+        }
+
+    </script>
+}

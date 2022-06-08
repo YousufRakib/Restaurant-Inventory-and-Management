@@ -1,0 +1,39 @@
+﻿@model CommonEntityModel.EntityModel.InventoryModel
+
+@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+<div class="container">
+
+    <h3 class="heading">Add Inventory</h3>
+    <div class="div">
+        <form asp-action="AddInventory">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <label for="ProductId">Product</label>
+            @Html.DropDownList("ProductId", (IEnumerable<SelectListItem>)ViewBag.Inventory, "--Select Product--", new { @class = "textBox validate" })
+
+            <label for="Price">Price</label>
+            <input id="Price" name="Price" type="text" asp-for="Price" class="textBox validate" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+
+            <label for="Quantity">Quantity</label>
+            <input id="Quantity" name="Quantity" type="text" asp-for="Quantity" class="textBox validate" />
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+
+            <label for="Total">Total Price</label>
+            <input id="Total" name="Total" type="text" asp-for="Total" class="textBox validate" />
+            <span asp-validation-for="Total" class="text-danger"></span>
+
+            <label for="Comment">Comment</label>
+            <input id="Comment" name="Comment" type="text" asp-for="Comment" class="textBox validate" />
+            <span asp-validation-for="Comment" class="text-danger"></span>
+
+            <input class="submit-button" type="submit" value="Save">
+        </form>
+    </div>
+
+</div>
+
+

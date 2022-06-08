@@ -1,0 +1,16 @@
+﻿@model CommonEntityModel.ModelClass.SearchBarAndPagerForAuditLog
+
+<div class="container btn-group" style="width:860px; margin-bottom:5px">
+    <div class="col-4 p-0 justify-content-end" style="margin-left: -4%">
+        <form asp-controller="Log" asp-action="GetAuditLogList">
+            <span class="btn-group">
+                <input class="p-1 ml-2 btn btn-sm btn-info" style="height:32px; margin-top:1px;width:100px;border-radius:2px;" type="submit" value="Search" />&nbsp; &nbsp;
+                <input class="form-control" style="height:32px;padding:16px;width:150px;" type="text" name="AuditByTxt" value="@Model.AuditByTxt" placeholder="Audit By" />&nbsp; &nbsp;
+                <input class="form-control" style="height:32px;padding:16px;width:150px;" type="text" name="ControllerNameTxt" value="@Model.ControllerNameTxt" placeholder="Controller Name" />&nbsp; &nbsp;
+                <input class="form-control" style="height:32px;padding:16px;width:150px;" type="text" name="ActionNameTxt" value="@Model.ActionNameTxt" placeholder="Action Name" />&nbsp; &nbsp;
+                <input class="form-control" style="height:32px;padding:16px;width:150px;" type="text" name="PreInfoTxt" value="@Model.PreInfoTxt" placeholder="Previous Info" />&nbsp; &nbsp;
+                <input class="form-control" style="height:32px;padding:16px;width:150px;" type="text" name="UpdatedInfoNameTxt" value="@Model.UpdatedInfoNameTxt" placeholder="Updated Info" />&nbsp; &nbsp;
+            </span>
+        </form>
+    </div>
+</div>

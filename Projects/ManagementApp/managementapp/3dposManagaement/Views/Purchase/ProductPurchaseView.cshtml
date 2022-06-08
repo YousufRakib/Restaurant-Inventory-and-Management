@@ -1,0 +1,158 @@
+﻿@model _3dposManagaement.Utility.CommonModel.PurchaseProductMargeModels
+@using CommonEntityModel.ModelClass;
+
+@{
+    ViewData["Title"] = "Purchased product info";
+    SearchBarAndPager searchBarAndPager = new SearchBarAndPager();
+    int pageNo = 0;
+    var loggedInUserId = ViewBag.loggedInUserID;
+    if (ViewBag.searchBar_Pager != null)
+    {
+        searchBarAndPager = ViewBag.searchBar_Pager;
+        pageNo = searchBarAndPager.CurrentPage;
+    }
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+<br />
+
+<div class="row">
+    <div class="card col-sm-10">
+        <div class="card-body">
+            <h3>@ViewBag.Message</h3><br />
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <!-- id=dataTable -->
+                    <thead>
+                        <tr>
+                            <th>
+                                Sl
+                            </th>
+                            <th>
+                                Product Category
+                            </th>
+                            <th>
+                                Product Product
+                            </th>
+                            <th>
+                                Unit Type
+                            </th>
+                            <th>
+                                Unit Price
+                            </th>
+                            <th>
+                                Quantity
+                            </th>
+                            <th>
+                                Total Price
+                            </th>
+                            <th>
+                                Purchase From
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.purchaseProductViewModel != null)
+                        {
+                            @foreach (var item in Model.purchaseProductViewModel)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Sl)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.ProductCategoryName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.ProductName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.UnitTypeName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Price)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Quantity)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Total)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.PurchaseFrom)
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <partial name="_Paging" model="@searchBarAndPager" />
+            </div>
+        </div>
+    </div>
+    <div class="card col-sm-2">
+        <div class="table-responsive">
+
+            <table class="table table-bordered" width="100%" cellspacing="0" style="border:none">
+                <!-- id=dataTable -->
+                <thead>
+                    <tr>
+                        <th style="border: none; border-bottom: 1px solid #dee2e6;">
+                            PC
+                        </th>
+                        <th style="border: none; border-bottom: 1px solid #dee2e6;">
+                            Total
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.purchaseProductCategoryWiseSummations != null)
+                    {
+                        @foreach (var item in Model.purchaseProductCategoryWiseSummations)
+                        {
+                            <tr>
+                                <td style="border:none">
+                                    @Html.DisplayFor(modelItem => item.ProductCategoryName)
+                                </td>
+                                <td style="border:none">
+                                    @Html.DisplayFor(modelItem => item.TotalPrice)
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td style="border:none"></td>
+                            <td style="border:none"></td>
+                        </tr>
+
+                    }
+
+                </tbody>
+                <tfoot style="border-top: 1px solid #dee2e6;">
+                    <tr>
+                        <td style="border:none">Total:</td>
+                        <td style="border:none">@Model.NetTotal</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+

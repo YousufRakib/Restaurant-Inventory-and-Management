@@ -1,0 +1,155 @@
+﻿@model IEnumerable<_3dposManagaement.Utility.CommonModel.InventoryViewModel>
+@using CommonEntityModel.ModelClass;
+
+@{
+    ViewData["Title"] = "Inventory list page";
+
+    SearchBarAndPager searchBarAndPager = new SearchBarAndPager();
+    int pageNo = 0;
+    var loggedInUserId = ViewBag.loggedInUserID;
+    if (ViewBag.searchBar_Pager != null)
+    {
+        searchBarAndPager = ViewBag.searchBar_Pager;
+        pageNo = searchBarAndPager.CurrentPage;
+    }
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+<h6>@ViewBag.Path</h6>
+<br />
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h3>Inventory List</h3><br />
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="table-responsive">
+            &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <partial name="_SearchBar" model="@searchBarAndPager" />
+
+            <table class="table table-bordered" width="100%" cellspacing="0">
+                <!-- id=dataTable -->
+                <thead>
+                    <tr>
+                        <th>
+                            Inventory ID
+                        </th>
+                        <th>
+                            Product Name
+                        </th>
+                        <th>
+                            Price
+                        </th>
+                        <th>
+                            Quantity
+                        </th>
+                        <th>
+                            Total Price
+                        </th>
+                        <th>
+                            Created By
+                        </th>
+                        <th>
+                            Created Date
+                        </th>
+                        <th>
+                            Updated By
+                        </th>
+                        <th>
+                            Updated Date
+                        </th>
+                        @*<th>
+                                Action
+                            </th>*@
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.InventoryId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ProductName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Price)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Quantity)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Total)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CreatedByName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CreatedDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UpdatedByName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UpdatedDate)
+                            </td>
+                            @*<td>
+                                    <a href="#">
+                                        <a class="btn btn-secondary btn-sm" asp-controller="Inventory" asp-action="EditInventory" asp-route-id=@item.InventoryId><span class="fas fa-edit"></span></a>
+                                        <a class="btn btn-danger btn-sm" onclick="deleteProduct(@item.ProductId)"><span class="fas fa-trash"></span></a>
+                                    </a>
+                                </td>*@
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <partial name="_Paging" model="@searchBarAndPager" />
+            @*<partial name="_Paging2" model="@searchBarAndPager" />*@
+        </div>
+    </div>
+</div>
+
+@*@section scripts{
+
+        <script>
+
+            function deleteProduct(id) {
+
+                var productID = id;
+
+                $.ajax({
+                        type: "GET",
+                        url: "@Url.Action("RemoveProduct", "Inventory")",
+                        data: { id: productID },
+                        dataType: "json",
+                        contentType: "application/json",
+                        success: function (data) {
+                        //Loading(false);
+                            if (data.output === "success") {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: data.msg,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                                window.location.href = '/Inventory/ProductList';
+                                return false;
+                            }
+                            else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops!',
+                                    text: data.msg
+                                })
+                                window.location.href = '/Inventory/ProductList';
+                                return false;
+                            }
+                        }
+                });
+            }
+
+        </script>
+
+    }*@

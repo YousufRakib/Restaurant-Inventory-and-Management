@@ -1,0 +1,399 @@
+﻿@model _3dposManagaement.Utility.CommonModel.ProductMargeViewModel
+@using CommonEntityModel.ModelClass;
+
+@{
+    ViewData["Title"] = "Product list page";
+    SearchBarAndPager searchBarAndPager = new SearchBarAndPager();
+    int pageNo = 0;
+    var loggedInUserId = ViewBag.loggedInUserID;
+    if (ViewBag.searchBar_Pager != null)
+    {
+        searchBarAndPager = ViewBag.searchBar_Pager;
+        pageNo = searchBarAndPager.CurrentPage;
+    }
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+<h6>@ViewBag.Path</h6>
+<br />
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h3>@ViewBag.Message</h3><br />
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="table-responsive">
+            <a href="#" class="btn btn-info" onclick="AddProduct(0)">Add Product</a> <br /><br />
+
+            <partial name="_SearchBar" model="@searchBarAndPager" />
+
+            <table class="table table-bordered" width="100%" cellspacing="0">
+                <!-- id=dataTable -->
+                <thead>
+                    <tr>
+                        <th>
+                            Product ID
+                        </th>
+                        <th>
+                            Product Name
+                        </th>
+                        <th>
+                            Product Unit
+                        </th>
+                        <th>
+                            Product Category
+                        </th>
+                        <th>
+                            Created By
+                        </th>
+                        <th>
+                            Created Date
+                        </th>
+                        <th>
+                            Updated By
+                        </th>
+                        <th>
+                            Updated Date
+                        </th>
+                        <th>
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.productModels)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ProductId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ProductName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UnitType)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ProductCategory)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CreatedByName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CreatedDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UpdatedByName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UpdatedDate)
+                            </td>
+                            <td>
+                                <a href="#">
+                                    <a class="btn btn-secondary btn-sm" onclick='EditProductRecord(@item.ProductId)'><span class="fas fa-edit"></span></a>
+                                    <a class="btn btn-danger btn-sm" onclick='DeleteProductRecord(@item.ProductId)'><span class="fas fa-trash"></span></a>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <partial name="_Paging" model="@searchBarAndPager" />
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="SaveModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="SaveModalTitle"></h5>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+            </div>
+            <div class="modal-body">
+                <form id="saveForm">
+                    <fieldset id="SubmitForm">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-4">Product Name</div>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(m => m.ProductName, new { @id = "ProductName", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-4">Unit Type</div>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(m => m.UnitTypeId, ViewBag.UnitTypeList as SelectList, "-Select UnitType-", new { @id = "SaveUnitTypeDropdown", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-4">Product Category</div>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(m => m.ProductCategoryId, ViewBag.ProductCategoryList as SelectList, "-Select ProductCategory-", new { @id = "SaveProductCategoryDropdown", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-9"></div>
+                                <div class="col-md-3">
+                                    <a href="#" class="btn btn-block btn-danger" id="SaveProductRecord">Save</a>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="EditModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="EditModalTitle"></h5>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <fieldset id="UpdatedSubmitForm">
+                        @Html.HiddenFor(m => m.ProductId, new { @id = "EditProductId" })
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-4">Product Name</div>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(m => m.ProductName, new { @id = "EditProductName", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-4">Unit Type</div>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(m => m.UnitTypeId, ViewBag.UnitTypeList as SelectList, "-Select UnitType-", new { @id = "EditUnitTypeDropdown", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-4">Product Category</div>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(m => m.ProductCategoryId, ViewBag.ProductCategoryList as SelectList, "-Select ProductCategory-", new { @id = "EditProductCategoryDropdown", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8"></div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <a href="#" class="btn btn-block btn-danger" id="UpdateProductRecord">Update</a>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="DeleteConfirmation">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Delete Product</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="productId" hidden />
+                <h4 style="text-align: center;">Do you want to delete this ?</h4>
+                <br />
+                <div>
+                    <h6 style="font-weight: bold; text-align: center;"> Yes</h6>
+                </div>
+                <div>
+                    <h6 style="text-align: center;">Verify Code</h6>
+                </div>
+
+                <input type="text" class="code-button" id="code1" style=" width: 18px; border-top: none; border-left: none; border-right: none;margin-left:41%" />
+                <input type="text" class="code-button" id="code2" style=" width: 18px; border-top: none; border-left: none; border-right: none;" />
+                <input type="text" class="code-button" id="code3" style=" width: 18px; border-top: none; border-left: none; border-right: none;" />
+                <input type="text" class="code-button" id="code4" style=" width: 18px; border-top: none; border-left: none; border-right: none;" />
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-primary" data-dismiss="modal" id="r">Cancle</a>
+                <a href="#" class="btn btn-danger" id="confirmButton" onclick="ConfirmDelete()" style="margin-right:32%">Confirm</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+
+    <script>
+
+        $("#code1").keyup(function () {
+            document.getElementById("code2").focus();
+        });
+        $("#code2").keyup(function () {
+            document.getElementById("code3").focus();
+        });
+        $("#code3").keyup(function () {
+            document.getElementById("code4").focus();
+        });
+        $("#code4").keyup(function () {
+            document.getElementById("confirmButton").focus();
+        });
+
+        function AddProduct(productId) {
+            $("#saveForm")[0].reset();
+            $("#SaveUnitTypeDropdown option:selected").text("--Select UnitType--");
+            $("#SaveProductCategoryDropdown option:selected").text("--Select ProductCategory--");
+            $("#SaveModalTitle").html("Add Product");
+            $("#SaveModal").modal();
+
+        }
+
+        function EditProductRecord(productId) {
+            $("#editForm")[0].reset();
+            $("#EditProductId").val(0);
+            $("#EditModalTitle").html("Edit Product");
+
+            $("#EditModal").modal();
+
+            var url = "/Inventory/GetProductById?productId=" + productId;
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    $("#EditProductId").val(obj.ProductId);
+                    $("#EditProductName").val(obj.ProductName);
+
+                    $("#EditUnitTypeDropdown option:selected").text(obj.UnitTypeName);
+                    $("#EditUnitTypeDropdown option:selected").val(obj.UnitTypeId);
+
+                    $("#EditProductCategoryDropdown option:selected").text(obj.ProductCategoryName);
+                    $("#EditProductCategoryDropdown option:selected").val(obj.ProductCategoryId);
+                }
+            })
+        }
+
+        $("#SaveProductRecord").click(function () {
+            var data = new FormData();
+
+            var ProductName = $('#ProductName').val();
+            var UnitTypeId = $("#SaveUnitTypeDropdown option:selected").val();
+            var ProductCategoryId = $("#SaveProductCategoryDropdown option:selected").val();
+
+            var dataModel = {
+                ProductName: ProductName,
+                UnitTypeId:UnitTypeId,
+                ProductCategoryId:ProductCategoryId
+            }
+
+            data.append('dataModel', JSON.stringify(dataModel));
+
+            $.ajax({
+                type: "Post",
+                url: "/Inventory/SaveProduct",
+                data: data,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data.output === "success") {
+                        alert("Data Saved Successfully!");
+                        window.location.href = "/Inventory/ProductList";
+                        $("#SaveModal").modal("hide");
+                    }
+                    else if (data.output === "exist") {
+                        alert("This Product already exist!");
+                    }
+                    else if (data.output === "error") {
+                        alert("Exception");
+                    }
+                }
+            })
+        });
+
+        $("#UpdateProductRecord").click(function () {
+            var data = new FormData();
+
+            var ProductId = $('#EditProductId').val();
+            var ProductName = $('#EditProductName').val();
+            var UnitTypeId = $("#EditUnitTypeDropdown option:selected").val();
+            var ProductCategoryId = $("#EditProductCategoryDropdown option:selected").val();
+
+            var dataModel = {
+                ProductId: ProductId,
+                ProductName: ProductName,
+                UnitTypeId:UnitTypeId,
+                ProductCategoryId:ProductCategoryId
+            }
+
+            data.append('dataModel', JSON.stringify(dataModel));
+
+            $.ajax({
+                type: "Post",
+                url: "/Inventory/EditProduct",
+                data: data,
+                //dataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data.output === "success") {
+                        alert("Data Updated Successfully!");
+                        window.location.href = "/Inventory/ProductList";
+                        $("#EditModal").modal("hide");
+                    }
+                    else if (data.output === "exist") {
+                        alert("This Product already exist!");
+                    }
+                    else if (data.output === "error") {
+                        alert("Exception");
+                    }
+                }
+            })
+        });
+
+        var DeleteProductRecord = function (productId) {
+            $("#productId").val(productId);
+            $("#DeleteConfirmation").modal("show");
+        }
+
+        var ConfirmDelete = function () {
+            var code = $("#code1").val() + $("#code2").val() + $("#code3").val() + $("#code4").val();
+            var productId = $("#productId").val();
+
+            $.ajax({
+                type: "POST",
+                url: "/Inventory/DeleteProduct?productId=" + productId + "&code=" + code,
+                success: function (data) {
+                    if (data.output === "success") {
+                        alert("Deleted!..");
+                        window.location.href = "/Inventory/ProductList";
+                        $("#DeleteConfirmation").modal("hide");
+                        $(".row_" + unitTypeId).remove();
+                    }
+                    else if (data.output === "insuccess") {
+                        alert("Code not match");
+                        window.location.href = "/Inventory/ProductList";
+                        $("#DeleteConfirmation").modal("hide");
+                    }
+                    else if (data.output === "error") {
+                        alert("Exception");
+                        window.location.href = "/Inventory/ProductList";
+                        $("#DeleteConfirmation").modal("hide");
+                    }
+                }
+            })
+        }
+
+    </script>
+}

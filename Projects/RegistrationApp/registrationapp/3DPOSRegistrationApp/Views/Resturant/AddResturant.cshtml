@@ -1,0 +1,57 @@
+﻿@model _3DPOSRegistrationApp.Utility.ResturantModel.ResturantModel
+
+@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+<div class="container">
+
+    <h3 class="heading">Add Restaurant</h3>
+    <div class="div">
+        <form asp-action="AddResturant">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <label for="RestaurantName">Restaurant Name</label>
+            <input id="RestaurantName" name="RestaurantName" type="text" asp-for="RestaurantName" class="textBox validate" />
+            <span asp-validation-for="RestaurantName" class="text-danger"></span>
+
+            <label for="CompanyRegistrationNo">Registration No</label>
+            <input id="CompanyRegistrationNo" name="CompanyRegistrationNo" type="text" asp-for="CompanyRegistrationNo" class="textBox validate" />
+            <span asp-validation-for="CompanyRegistrationNo" class="text-danger"></span>
+
+            <label for="ContactPersion">Contact Persion</label>
+            <input id="ContactPersion" name="ContactPersion" type="text" asp-for="ContactPersion" class="textBox validate" />
+            <span asp-validation-for="ContactPersion" class="text-danger"></span>
+
+            <label for="ContactEmail">Contact Email</label>
+            <input id="ContactEmail" name="ContactEmail" type="email" asp-for="ContactEmail" class="textBox validate" />
+            <span asp-validation-for="ContactEmail" class="text-danger"></span>
+
+            <label for="ContactPhone">Contact Phone</label>
+            <input id="ContactPhone" name="ContactPhone" type="text" asp-for="ContactPhone" class="textBox validate" />
+            <span asp-validation-for="ContactPhone" class="text-danger"></span>
+
+            <label for="CountryName">Country</label>
+            @Html.DropDownList("Country", (IEnumerable<SelectListItem>)ViewBag.Countries, "--Select Country--", new { @class = "textBox validate" })
+
+            <label for="DistrictName">District</label>
+            @Html.DropDownList("District", (IEnumerable<SelectListItem>)ViewBag.Districts, "--Select District--", new { @class = "textBox validate" })
+
+            <label for="PostCode">PostCode</label>
+            <input id="PostCode" name="PostCode" type="text" asp-for="PostCode" class="textBox validate" />
+            <span asp-validation-for="PostCode" class="text-danger"></span>
+
+            <label for="Address">Address</label>
+            <input id="Address" name="Address" type="text" asp-for="Address" class="textBox validate" />
+            <span asp-validation-for="Address" class="text-danger"></span>
+
+            <label for="RestaurantStatus">Restaurant Status</label>
+            @Html.DropDownList("RestaurantStatus", (IEnumerable<SelectListItem>)ViewBag.RestaurantStatus, new { @class = "textBox validate" })
+
+            <input class="submit-button" type="submit" value="Save">
+        </form>
+    </div>
+
+</div>
+
+

@@ -1,0 +1,37 @@
+﻿@model _3DPOSRegistrationApp.Utility.ResturantModel.RestaurantUserWithDatabase
+
+@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+<div class="container">
+
+    <h3 class="heading">Add NewUser</h3>
+    <div class="div">
+        <form asp-action="AddRestaurantUser">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <input id="RestaurantId" name="RestaurantId" type="hidden" asp-for="RestaurantId" value="@ViewBag.RestaurantId" class="textBox validate" />
+
+            <label for="UserName">UserName</label>
+            <input id="UserName" name="UserName" type="text" asp-for="UserName" class="textBox validate" />
+            <span asp-validation-for="UserName" class="text-danger"></span>
+
+            <label for="Email">Email</label>
+            <input id="Email" name="Email" type="Email" asp-for="Email" class="textBox validate" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+
+            <label for="Password">Password</label>
+            <input id="Password" name="Password" type="text" asp-for="Password" class="textBox validate" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+
+            <label for="RoleId">User Role</label>
+            @Html.DropDownList("RoleId", (IEnumerable<SelectListItem>)ViewBag.UserRoles, "--Select Role--", new { @class = "textBox validate" })
+
+            <input class="submit-button" type="submit" value="Save">
+        </form>
+    </div>
+
+</div>
+
+

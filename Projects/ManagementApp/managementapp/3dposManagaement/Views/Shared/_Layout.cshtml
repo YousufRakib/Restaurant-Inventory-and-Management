@@ -1,0 +1,123 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using CommonEntityModel.EntityModel;
+
+@inject SignInManager<ApplicationUser> SignInManager
+@*@inject UserManager<IdentityUser> UserManager*@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            text-align: left;
+            background-color: #fff;
+        }
+    </style>
+
+
+    <title>3DPOS</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="~/HomeTemp/css/minified/materializecss.min.css" rel="stylesheet" />
+    <link href="~/HomeTemp/css/style.css" rel="stylesheet" />
+</head>
+<body>
+    <header style="background-color:#343a40">
+        <nav class="nav-extended nav-fixed transparent z-depth-1" style="height:56px">
+            <div class="nav-wrapper">
+                @*<a class="navbar-brand" asp-area="" asp-controller="User" asp-action="Home">3DPOSRegistration Module</a>*@
+                <a asp-area="" asp-controller="User" asp-action="Home" style="color:white; font-size:1.3rem;padding-left:1rem;font-family:Arial, Helvetica, sans-serif ">DBPOS Restaurant Management</a>
+
+                @*<a href="#" class="sidenav-trigger menu" data-target="mobile-nav">
+                        <i class="material-icons">menu</i>
+                    </a>*@
+
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    @*<li>
+                            <a asp-area="" asp-controller="Administration" asp-action="CreateRole"
+                               class="btn-flat hover-underline-animation"
+                               id="signin">UserRole</a>
+                        </li>*@
+                    @*<li>
+                            <a asp-area="" asp-controller="User" asp-action="UserList"
+                               class="btn-flat hover-underline-animation"
+                               id="signin">Users</a>
+                        </li>*@
+
+                    @*@if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item">
+                                <form method="post" asp-controller="User" asp-action="LogOut">
+                                    <button type="submit" style="width:auto"
+                                            class="nav-link btn btn-link py-0">
+                                        LogOut (@User.Identity.Name)
+
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a asp-area="" asp-controller="User" asp-action="Registration"
+                                   class="btn-flat hover-underline-animation"
+                                   id="register" style="color:white">SignUp</a>
+                            </li>
+                            <li class="nav-item">
+                                <a asp-area="" asp-controller="User" asp-action="Login"
+                                   class="btn-flat hover-underline-animation"
+                                   id="signin" style="color:white">SignIn</a>
+                            </li>
+                        }*@
+
+                    @*<li class="nav-item">
+                        <a asp-area="" asp-controller="User" asp-action="Registration"
+                           class="btn-flat hover-underline-animation"
+                           id="register" style="color:white;font-family:Arial, Helvetica, sans-serif ">SignUp</a>
+                    </li>*@
+                    <li class="nav-item">
+                        <a asp-area="" asp-controller="User" asp-action="Login"
+                           class="btn-flat hover-underline-animation"
+                           id="signin" style="color:white;font-family:Arial, Helvetica, sans-serif ">SignIn</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <ul class="sidenav" id="mobile-nav">
+            @*<li><a asp-area="" asp-controller="User" asp-action="UserList">Users</a></li>*@
+            <li><a asp-area="" asp-controller="User" asp-action="Login">SignIn</a></li>
+            @*<li><a asp-area="" asp-controller="User" asp-action="Registration">SignUp</a></li>*@
+        </ul>
+    </header>
+
+    <main>
+        @*@RenderBody()*@
+        <div class="container">
+            @RenderBody()
+        </div>
+    </main>
+
+    <script src="~/js/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+    <script src="~/js/materialize.min.js" crossorigin="anonymous"></script>
+    <script src="~/HomeTemp/js/plugin.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await Html.PartialAsync("_ValidationScriptsPartial.cshtml")
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
+
+
+
+
+
+
+
+

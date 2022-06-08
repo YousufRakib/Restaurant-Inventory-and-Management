@@ -1,0 +1,13 @@
+﻿@model CommonEntityModel.ModelClass.SearchBarAndPager
+
+<div class="container btn-group" style="width:860px; margin-bottom:5px">
+    <div class="col-4 p-0 justify-content-end" style="margin-left: 75%">
+        <form asp-controller="@Model.Controller" asp-action="@Model.Action">
+            <span class="btn-group">
+                <input class="form-control" style="height:32px;padding:16px" type="text" name="SearchText" value="@Model.SearchText" placeholder="Search" />
+                <input class="p-1 ml-2 btn btn-sm btn-info" style="height:32px; margin-top:1px; " type="submit" value="Search" />
+            </span>
+        </form>
+
+    </div>
+</div>

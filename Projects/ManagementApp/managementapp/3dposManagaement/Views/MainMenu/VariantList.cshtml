@@ -1,0 +1,294 @@
+﻿@model _3dposManagaement.Utility.MenuModel.VariantMargeViewModel
+@using CommonEntityModel.ModelClass;
+
+@{
+    ViewData["Title"] = "Variant list page";
+    SearchBarAndPager searchBarAndPager = new SearchBarAndPager();
+    int pageNo = 0;
+    var loggedInUserId = ViewBag.loggedInUserID;
+    if (ViewBag.searchBar_Pager != null)
+    {
+        searchBarAndPager = ViewBag.searchBar_Pager;
+        pageNo = searchBarAndPager.CurrentPage;
+    }
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+<h6>@ViewBag.Path</h6>
+<br />
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h3>@ViewBag.Message</h3><br />
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="table-responsive">
+            <a href="#" class="btn btn-info" onclick="AddVariant(0)">Add Variant</a> <br /><br />
+            @*<a class="btn btn-sm btn-info" style="height:32px; margin-top:-3px;margin-left:0px;width:139px" asp-area="" asp-controller="Inventory" asp-action="AddProduct">
+                    Add Menu
+                </a>*@
+            <partial name="_SearchBar" model="@searchBarAndPager" />
+
+            <table class="table table-bordered" width="100%" cellspacing="0">
+                <!-- id=dataTable -->
+                <thead>
+                    <tr>
+                        <th>
+                            Variant Name
+                        </th>
+                        <th>
+                            Number
+                        </th>
+                        <th>
+                            Variants
+                        </th>
+                        <th>
+                            Status
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.VariantViewModelList)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.VariantMasterName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.VariantMasterNumber)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.VariantName)
+                            </td>
+                            <td>
+                                @if (item.Status == true)
+                                {
+                                    var status = 1;
+                                    <label class="statusSwitch">
+                                        <input type="checkbox" onclick='UpdateStatus(@item.VariantMasterId,@status)' checked>
+                                        <span class="statusSlider round"></span>
+                                    </label>
+                                }
+                                else
+                                {
+                                    var status = 0;
+                                    <label class="statusSwitch">
+                                        <input type="checkbox" onclick='UpdateStatus(@item.VariantMasterId,@status)'>
+                                        <span class="statusSlider round"></span>
+                                    </label>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <partial name="_Paging" model="@searchBarAndPager" />
+        </div>
+    </div>
+</div>
+
+@*Create A Popup Modal for Add ItemCategory*@
+
+<div class="modal fade" id="SaveModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="SaveModalTitle"></h5>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+            </div>
+            <div class="modal-body">
+                <form id="saveForm">
+                    <fieldset id="SubmitForm">
+                        @Html.HiddenFor(m => m.VariantMasterId, new { @id = "VariantMasterId" })
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-3">Variant Name</div>
+                                <div class="col-md-9">@Html.TextBoxFor(m => m.VariantMasterName, new { @id = "VariantMasterName", @class = "form-control" })</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-3">Number</div>
+                                <div class="col-md-9">@Html.TextBoxFor(m => m.VariantMasterNumber, new { @id = "VariantMasterNumber", @type = "number", @class = "form-control" })</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-3"></div>
+                                <div class="col-md-9">
+                                    <table class="table table-striped" id="TableVariantList">
+                                        <tbody id="ListVariant">
+                                            <tr id="VariantLoadingStatus" style="color:red"></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-9"></div>
+                                <div class="col-md-3">
+                                    <a href="#" class="btn btn-block btn-danger" id="SaveVariant">Save</a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="StatusConfirmation">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Change Status</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="statusVariantId" hidden />
+                <h4 style="text-align: center;">Are you sure, You want to <input style="width: 19%; border: none; font-size: 1.5rem; font-weight: 500; margin-right: -2px; text-align: center; " type="text" id="status" /> this?</h4>
+
+                <br />
+
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-primary" data-dismiss="modal" onclick="CloseModal()" id="closeModal">Cancle</a>
+                <a href="#" class="btn btn-danger" id="confirmStatusButton" onclick="ConfirmStatus()" style="margin-right:32%">Confirm</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+
+        $('#VariantMasterNumber').on('change', function () {
+
+            var table = document.getElementById("TableVariantList");
+            var rowCount = table.rows.length;
+            for (var i = rowCount - 1; i >= 0; i--) {
+                table.deleteRow(i);
+            }
+
+            var variantNumber = $('#VariantMasterNumber').val();
+            VariantBind(variantNumber);
+
+        });
+
+        function VariantBind(variantNumber) {
+
+            var SetData = $("#ListVariant");
+            for (var i = 0; i < variantNumber; i++) {
+                var num = parseInt(i) + parseInt(1)
+                var Data =
+                    "<tr class='row_" + i + "'>" +
+                    "<td> <p style='margin-bottom:0px'>Variant " + num + " Name </p> <input type='text' id='" + i + "'/></td>" +
+                    "</tr>";
+                SetData.append(Data);
+            }
+        }
+
+        function AddVariant(variantId) {
+            $("#saveForm")[0].reset();
+            $("#VariantMasterId").val(0);
+            $("#SaveModalTitle").html("Add Variant");
+            $("#SaveModal").modal();
+        }
+
+        $("#SaveVariant").click(function () {
+
+            var data = new FormData();
+
+            ///Start store variant data
+            var variantListModel = [];
+            var variantGrid = document.getElementById("TableVariantList");
+
+            for (var i = 0; i < variantGrid.rows.length; i++) {
+                var variantList = {
+                    VariantName: document.getElementById(i).value
+                };
+
+                variantListModel.push(variantList);
+            }
+            ///End store variant data
+
+            var VariantMasterName = $('#VariantMasterName').val();
+            var VariantMasterNumber = $('#VariantMasterNumber').val();
+
+            var dataModel = {
+                VariantMasterName: VariantMasterName,
+                VariantMasterNumber: VariantMasterNumber
+            }
+            console.log(variantListModel);
+
+            data.append('dataModel', JSON.stringify(dataModel));
+            data.append('variantListModel', JSON.stringify(variantListModel));
+
+            /*var model2 = $("#SubmitForm").serialize();*/
+
+            $.ajax({
+                type: "Post",
+                url: "/MainMenu/AddVariant",
+                data: data,
+                //dataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data.output === "success") {
+                        alert("Data Saved Successfully!");
+                        window.location.href = "/MainMenu/VariantList";
+                        $("#SaveModal").modal("hide");
+                    }
+                    else {
+                        alert("Exception");
+                        //window.location.href = "/MainMenu/ItemList";
+                        //$("#SaveModal").modal("hide");
+                    }
+                }
+            })
+        });
+
+        var CloseModal = function () {
+            window.location.href = "/MainMenu/VariantList";
+            $("#StatusConfirmation").modal("hide");
+        }
+
+        var UpdateStatus = function (variantId, status) {
+            if (status == 1) {
+                $("#status").val("Inactive");
+            }
+            else {
+                $("#status").val("Active");
+            }
+            $("#statusVariantId").val(variantId);
+            $("#StatusConfirmation").modal("show");
+        }
+
+        var ConfirmStatus = function () {
+            var variantId = $("#statusVariantId").val();
+
+            $.ajax({
+                type: "POST",
+                url: "/MainMenu/ChangeVariantStatus?variantId=" + variantId,
+                success: function (data) {
+                    if (data.output === "success") {
+                        alert("Changed!..");
+                        window.location.href = "/MainMenu/VariantList";
+                        $("#StatusConfirmation").modal("hide");
+                    }
+                    else {
+                        alert("Exception");
+                        window.location.href = "/MainMenu/VariantList";
+                        $("#StatusConfirmation").modal("hide");
+                    }
+                }
+            })
+        }
+    </script>
+}
